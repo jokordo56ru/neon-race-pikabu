@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#080d1d">
-<title>НЕОН-РЕЙС 5.4 — DODGE SURVIVOR</title>
+<title>НЕОН-РЕЙС 5.5 — DODGE SURVIVOR</title>
 <style>
 :root{color-scheme:dark;--bg:#080d1d;--panel:#101a35;--line:#47618b88;--muted:#a9bbdc;--cyan:#5deaff;--purple:#9a83ff;--gold:#ffe27a;--green:#78f0b5;--danger:#ff8096}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;touch-action:pan-y;user-select:none;-webkit-tap-highlight-color:transparent}
@@ -217,13 +217,13 @@ function applyLanguageShell(){
 const SAVE_KEY = 'neonRaceProgress_v3';
 const SHIPS = [
   {id:'scout', name:'Стриж', price:0, level:1, color:'#5deaff', desc:'Стартовый корабль. Надёжная база для первых манёвров.', perk:'Сбалансированные характеристики'},
-  {id:'phantom', name:'Фантом', price:120, level:2, color:'#b78cff', desc:'Лёгкий корпус и отзывчивые двигатели.', perk:'+18% к скорости движения', speed:1.18},
-  {id:'guardian', name:'Страж', price:220, level:5, color:'#ff9b70', desc:'Усиленная конструкция выдерживает больше ударов.', perk:'+2 дополнительные жизни', lives:2},
-  {id:'magnet', name:'Магнит', price:350, level:8, color:'#78f0b5', desc:'Энергетический контур притягивает звёзды издалека.', perk:'+45 к радиусу сбора', magnet:45},
-  {id:'ghost', name:'Призрак', price:520, level:12, color:'#ffe27a', desc:'Фазовый двигатель один раз спасает от столкновения.', perk:'Игнорирует первое столкновение', revive:true},
-  {id:'valkyrie', name:'Валькирия', price:780, level:17, color:'#ff75d8', desc:'Манёвренный корпус для резких уклонений.', perk:'+15% к скорости и +1 жизнь', speed:1.15, lives:1},
-  {id:'bastion', name:'Бастион', price:1150, level:23, color:'#ffbf68', desc:'Крепость с усиленным полем защиты.', perk:'+2 жизни и стартовый щит', lives:2, startShield:1},
-  {id:'storm', name:'Шторм', price:1650, level:30, color:'#8aa9ff', desc:'Экспериментальный корабль с мощными маневровыми двигателями.', perk:'+10% скорости и +35 к радиусу сбора', speed:1.10, magnet:35}
+  {id:'phantom', name:'Фантом', price:180, level:2, color:'#b78cff', desc:'Лёгкий корпус и отзывчивые двигатели.', perk:'+18% к скорости движения', speed:1.18},
+  {id:'guardian', name:'Страж', price:350, level:5, color:'#ff9b70', desc:'Усиленная конструкция выдерживает больше ударов.', perk:'+2 дополнительные жизни', lives:2},
+  {id:'magnet', name:'Магнит', price:600, level:8, color:'#78f0b5', desc:'Энергетический контур притягивает звёзды издалека.', perk:'+45 к радиусу сбора', magnet:45},
+  {id:'ghost', name:'Призрак', price:900, level:12, color:'#ffe27a', desc:'Фазовый двигатель один раз спасает от столкновения.', perk:'Игнорирует первое столкновение', revive:true},
+  {id:'valkyrie', name:'Валькирия', price:1400, level:17, color:'#ff75d8', desc:'Манёвренный корпус для резких уклонений.', perk:'+15% к скорости и +1 жизнь', speed:1.15, lives:1},
+  {id:'bastion', name:'Бастион', price:2100, level:23, color:'#ffbf68', desc:'Крепость с усиленным полем защиты.', perk:'+2 жизни и стартовый щит', lives:2, startShield:1},
+  {id:'storm', name:'Шторм', price:3000, level:30, color:'#8aa9ff', desc:'Экспериментальный корабль с мощными маневровыми двигателями.', perk:'+10% скорости и +35 к радиусу сбора', speed:1.10, magnet:35}
 ];
 const RUN_PERKS = [
   {id:'thrusters',title:'Форсаж',icon:'➤',desc:'Скорость корабля увеличивается на 10%.',max:5},
