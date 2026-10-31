@@ -709,12 +709,12 @@ function showRunResults(){
 }
 function updateHUD(){$('hudScore').textContent=score;$('hudLives').textContent=lives;$('hudCrystals').textContent=profile.crystals;$('hudRunLevel').textContent=runLevel;$('hudRunXP').textContent=runEnergy+'/'+runEnergyNeed}
 function difficultyProfile(){
-  // v4.9: steeper survival curve. Each tier adds pressure without removing dodge windows.
-  if(elapsed<20)return{tier:0,rockInterval:.62,rockSpeed:1.08,drifterChance:.22,hunterChance:0,extraWaveChance:0,gateRatio:.31,gateInterval:18,eventRest:15,powerChance:.80,powerMin:10,powerSpan:5};
-  if(elapsed<45)return{tier:1,rockInterval:.43,rockSpeed:1.18,drifterChance:.27,hunterChance:.10,extraWaveChance:0,gateRatio:.285,gateInterval:14,eventRest:11,powerChance:.80,powerMin:9,powerSpan:5};
-  if(elapsed<75)return{tier:2,rockInterval:.32,rockSpeed:1.30,drifterChance:.30,hunterChance:.18,extraWaveChance:.08,gateRatio:.26,gateInterval:11,eventRest:8,powerChance:.82,powerMin:9,powerSpan:4};
-  if(elapsed<110)return{tier:3,rockInterval:.265,rockSpeed:1.40,drifterChance:.32,hunterChance:.23,extraWaveChance:.13,gateRatio:.24,gateInterval:9.5,eventRest:6,powerChance:.84,powerMin:8,powerSpan:4};
-  return{tier:4,rockInterval:.23,rockSpeed:1.48,drifterChance:.34,hunterChance:.27,extraWaveChance:.17,gateRatio:.22,gateInterval:8.5,eventRest:5,powerChance:.86,powerMin:8,powerSpan:3};
+  // Hard survival baseline. Permanent and in-run builds are intended to turn this pressure into power.
+  if(elapsed<20)return{tier:0,rockInterval:.48,rockSpeed:1.20,drifterChance:.26,hunterChance:.04,extraWaveChance:.02,gateRatio:.29,gateInterval:15,eventRest:12,powerChance:.80,powerMin:10,powerSpan:5};
+  if(elapsed<45)return{tier:1,rockInterval:.36,rockSpeed:1.29,drifterChance:.30,hunterChance:.12,extraWaveChance:.06,gateRatio:.27,gateInterval:12,eventRest:9,powerChance:.82,powerMin:9,powerSpan:5};
+  if(elapsed<75)return{tier:2,rockInterval:.29,rockSpeed:1.38,drifterChance:.33,hunterChance:.20,extraWaveChance:.14,gateRatio:.245,gateInterval:10,eventRest:7,powerChance:.84,powerMin:8,powerSpan:4};
+  if(elapsed<110)return{tier:3,rockInterval:.24,rockSpeed:1.50,drifterChance:.36,hunterChance:.26,extraWaveChance:.20,gateRatio:.225,gateInterval:8.5,eventRest:5.5,powerChance:.86,powerMin:8,powerSpan:4};
+  return{tier:4,rockInterval:.21,rockSpeed:1.58,drifterChance:.38,hunterChance:.30,extraWaveChance:.24,gateRatio:.21,gateInterval:7.5,eventRest:4.5,powerChance:.88,powerMin:7,powerSpan:3};
 }
 function spawnRock(){
   const difficulty=difficultyProfile(),roll=Math.random();
@@ -757,7 +757,7 @@ function hitPlayer(color='#ff6388'){
   if(currentShip().revive&&!ghostUsed){ghostUsed=true;burst(player.x,player.y,currentShip().color,22);playSfx('phase');return}
   lives--;burst(player.x,player.y,color,18);playSfx('hit');if(lives<=0){updateHUD();finishRun()}
 }
-function update(dt){if(state!=='play'||levelUpActive)return;const ship=currentShip(),u=profile.upgrades;elapsed+=dt;const difficulty=difficultyProfile();scoreCarry+=dt*10*(1+u.reactor*.08);const earned=Math.floor(scoreCarry);if(earned>0){score+=earned;scoreCarry-=earned}
+function update(dt){if(state!=='play'||levelUpActive)return;const ship=currentShip(),u=profile.upgrades;elapsed+=dt;const difficulty=difficultyProfile();scoreCarry+=dt*10*(1+u.reactor*.10);const earned=Math.floor(scoreCarry);if(earned>0){score+=earned;scoreCarry-=earned}
   const speed=player.speed*(1+u.engine*.12)*(ship.speed||1)*(1+runBuild.thrusters*.09);
   let moveX=(keys.arrowright||keys.d||keys.right?1:0)-(keys.arrowleft||keys.a||keys.left?1:0);
   let moveY=(keys.arrowdown||keys.s||keys.down?1:0)-(keys.arrowup||keys.w||keys.up?1:0);
