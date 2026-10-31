@@ -1,7 +1,7 @@
 NEON RACE — Pikabu Games Edition
-Version: 5.3
-Integrations: Pikabu SDK, Cloud Storage, Rewarded Ads (+25 crystals), Fullscreen Ads between flights
-Gameplay: dodge-only survivor progression, steep post-20-second difficulty ramp, restored long-term ship and upgrade costs, reduced crystal and XP income, expensive permanent starting shields
+Version: 5.4
+Integrations: Pikabu SDK, Cloud Storage, Rewarded Ads (+20 crystals), Fullscreen Ads between flights
+Gameplay: dodge-only survivor progression, pilot-level ship and workshop unlocks, higher long-term costs, reduced crystal and XP income, preserved save data
 Combat: none — no weapons, shots, or asteroid destruction
 Entrypoint: index.html
 Languages: Russian (default), English
