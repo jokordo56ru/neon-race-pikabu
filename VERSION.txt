@@ -1,7 +1,7 @@
 NEON RACE — Pikabu Games Edition
-Version: 4.9
+Version: 5.0
 Integrations: Pikabu SDK, Cloud Storage, Rewarded Ads (+50 crystals), Fullscreen Ads between flights
-Gameplay: hardcore survival rebalance, 5 difficulty tiers, burst hazard waves, stronger hunter asteroids, faster events, narrower moving gates
+Gameplay: survivor-style auto-targeting cannon, in-run level-up choices, permanent cannon upgrades, 8 specialised ships, hard survival curve
 Entrypoint: index.html
 Languages: Russian (default), English
 Fullscreen frequency is controlled by Pikabu SDK (minimum 120 seconds).
