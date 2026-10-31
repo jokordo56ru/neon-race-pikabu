@@ -1,0 +1,47 @@
+on:column}.rewardAdButton{width:100%}}
+
+.leaderboardSelectors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:12px}.leaderboardSelect{border:1px solid #49618b88;border-radius:12px;padding:10px 6px;background:#101a35;color:#b9c8e2;font-size:12px;font-weight:850;cursor:pointer}.leaderboardSelect.active{background:linear-gradient(100deg,#39cdeb33,#947cff33);border-color:#70cfff;color:#fff}.leaderboardPanel{min-height:180px}.leaderboardPanelHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.leaderboardTitle{font-size:17px;font-weight:950}.leaderboardRows{display:flex;flex-direction:column;gap:6px}.leaderboardRow{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid #3b557b88;border-radius:12px;background:#0c1935}.leaderboardRank{color:#78e6ff;font-weight:950}.leaderboardName{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:750}.leaderboardScore{color:#ffe27a;font-variant-numeric:tabular-nums}.leaderboardAuth{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:12px;border:1px solid #49618b88;border-radius:14px;background:#101a35;color:#a9bbdc;font-size:12px;line-height:1.45}.leaderboardAuth button{white-space:nowrap}
+@media(max-width:720px){.leaderboardSelectors{grid-template-columns:1fr}.leaderboardAuth{align-items:stretch;flex-direction:column}.leaderboardAuth button{width:100%}.homeGrid{grid-template-columns:1fr}.shipGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.shipCard:last-child{grid-column:span 2}.upgradeGrid{grid-template-columns:1fr}.profileGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{border-radius:19px}.brand small{font-size:9px}.walletItem{font-size:12px;padding:7px 8px}.gameHud{gap:5px;padding:0 8px}.pill{font-size:11px;padding:7px 8px}.iconbtn{width:36px;height:36px}}
+@media(max-height:650px){.panel{max-height:98dvh;padding:14px}.featureCard{min-height:210px}.tabs{margin-bottom:10px}.shipCard{padding:9px}.shipCard .shipVisual{height:58px}.shipCard p{min-height:32px}#touch{bottom:8px;width:132px;height:132px;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:4px}.touchbtn{width:40px;height:40px;font-size:21px}}
+@media(pointer:coarse){#touch{display:grid}}
+</style>
+</head>
+<body>
+<canvas id="game" aria-label="Игровое поле Неон-рейс"></canvas>
+<div id="ui">
+  <div id="gameHud" class="gameHud hidden">
+    <div class="hudGroup">
+      <div class="pill"><span id="hudScoreLabel">СЧЁТ</span> <span id="hudScore">0</span></div>
+      <div class="pill">♥ <span id="hudLives">3</span></div>
+    </div>
+    <div class="hudGroup">
+      <div class="pill">✦ <span id="hudCrystals">0</span></div>
+      <button class="iconbtn" id="soundBtn" aria-label="Звук" title="Звук">♫</button>
+      <button class="iconbtn" id="pauseBtn" aria-label="Пауза">Ⅱ</button>
+    </div>
+  </div>
+  <div id="runStatus" class="hidden"><span id="eventBadge" class="statusChip event hidden"></span><span id="powerBadge" class="statusChip power hidden"></span></div>
+  <div id="touch" class="hidden" aria-label="Экранное управление">
+    <button class="touchbtn" id="leftBtn" aria-label="Влево">←</button>
+    <button class="touchbtn" id="upBtn" aria-label="Вверх">↑</button>
+    <button class="touchbtn" id="downBtn" aria-label="Вниз">↓</button>
+    <button class="touchbtn" id="rightBtn" aria-label="Вправо">→</button>
+  </div>
+  <div id="menuOverlay" class="overlay">
+    <div class="panel">
+      <div class="header">
+        <div class="brand"><div class="brandMark">✦</div><div><h1 id="brandTitle">НЕОН-РЕЙС</h1><small id="brandSubtitle">КОСМИЧЕСКАЯ АРКАДА</small></div></div>
+        <div class="wallet"><select id="languageSelect" class="languageSelect" aria-label="Язык игры" title="Язык игры"><option value="ru">Русский</option><option value="en">English</option></select><div class="walletItem">✦ <b id="walletCrystals">0</b></div><div class="walletItem"><span id="walletLevelLabel">УРОВЕНЬ</span> <b id="walletLevel">1</b></div></div>
+      </div>
+      <nav class="tabs" id="tabs">
+        <button class="tab active" data-tab="home" id="tabHome">ПОЛЁТ</button>
+        <button class="tab" data-tab="garage" id="tabGarage">АНГАР</button>
+        <button class="tab" data-tab="upgrades" id="tabUpgrades">УЛУЧШЕНИЯ</button>
+        <button class="tab" data-tab="pilot" id="tabPilot">ПИЛОТ</button>
+      </nav>
+      <main id="screenContent" class="content"></main>
+      <div class="menuFooter"><span id="saveStatus" class="saveStatus">Прогресс сохраняется автоматически</span><span class="smallText" id="footerControls">← → ↑ ↓ / WASD · На телефоне — джойстик или перетаскивание</span><button class="iconbtn" id="menuSoundBtn" aria-label="Включить или выключить звук" title="Звук">♫</button></div>
+    </div>
+  </div>
+</div>
+<script>
