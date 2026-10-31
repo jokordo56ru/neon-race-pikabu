@@ -550,7 +550,7 @@ function renderPilot(){const lv=levelInfo(),pct=lv.into/lv.need*100,authorized=i
 function renderResults(){const lv=levelInfo();return `<div class="resultHero"><div class="medal">✦</div><h2>ПОЛЁТ ЗАВЕРШЁН</h2><p class="muted" style="margin:0">Отличная попытка, пилот!</p></div><div class="resultGrid"><div class="resultCard"><strong>${score}</strong><span>ОЧКИ</span></div><div class="resultCard"><strong>${starsThisRun}</strong><span>ЗВЁЗДЫ</span></div><div class="resultCard"><strong>${Math.floor(elapsed)}${currentLanguage==='en'?'s':'с'}</strong><span>ВРЕМЯ</span></div><div class="resultCard"><strong>${bossesThisRun}</strong><span>БОССЫ</span></div></div><div class="resultRewards"><div>Получено кристаллов за звёзды и бонусы: <b style="color:var(--gold)">+${runCrystals}</b></div><div>Получено опыта: <b style="color:var(--cyan)">+${runXp} XP</b></div>${levelGained>0?`<div class="levelUp">НОВЫЙ УРОВЕНЬ! Теперь ты пилот ${lv.level}-го уровня. Бонус: +${levelGained} наградных кристаллов.</div>`:''}<div style="margin-top:5px">Всего кристаллов: <b style="color:var(--gold)">${profile.crystals}</b></div></div>${rewardAdButton('results')}<div class="buttonRow"><button class="primary" data-action="start-run" style="flex:1">ЕЩЁ ОДИН ПОЛЁТ</button><button class="secondary" data-action="go-home">В АНГАР</button></div>`}
 function renderPause(){return `<div class="resultHero"><div class="medal">Ⅱ</div><h2>ПАУЗА</h2><p class="muted">Астероиды подождут. Можешь продолжить или вернуться в ангар.</p></div><div class="buttonRow"><button class="primary" data-action="resume" style="flex:1">ПРОДОЛЖИТЬ</button><button class="secondary" data-action="go-home">В АНГАР</button></div>`}
 function renderScreen(){updateWallet();$('tabs').classList.toggle('hidden',state==='over'||state==='paused');const area=$('screenContent');let markup=state==='over'?renderResults():state==='paused'?renderPause():activeTab==='home'?renderHome():activeTab==='garage'?renderGarage():activeTab==='upgrades'?renderUpgrades():activeTab==='leaderboards'?renderLeaderboards():renderPilot();area.innerHTML=translateMarkup(markup)}
-function startRun(){if(platformPaused)return;pausedByUser=false;pausedByPlatform=false;score=0;scoreCarry=0;elapsed=0;starsThisRun=0;bossesThisRun=0;runCrystals=0;runBonus=0;runXp=0;levelGained=0;const ship=currentShip();lives=3+Math.floor(upgradeLevel('hull')/2)+(ship.lives||0);ghostUsed=false;collisionCooldown=0;spawn=0;starSpawn=.8;rocks=[];stars=[];particles=[];powerups=[];gates=[];eventTimer=19;eventLeft=0;activeEvent=null;eventCycle=0;gateTimer=16;powerSpawnTimer=8;shieldHits=0;shieldTimer=0;activeBuff=null;buffTimer=0;player.x=W/2;player.y=H*.82;clampPlayer();state='play';$('menuOverlay').classList.add('hidden');$('gameHud').classList.remove('hidden');$('touch').classList.remove('hidden');$('runStatus').classList.remove('hidden');$('pauseBtn').textContent='Ⅱ';updateHUD();updateRunStatus();gameplayStart();ensureAudio();playSfx('start');startMusic()}
+function startRun(){if(platformPaused)return;pausedByUser=false;pausedByPlatform=false;score=0;scoreCarry=0;elapsed=0;starsThisRun=0;bossesThisRun=0;runCrystals=0;runBonus=0;runXp=0;levelGained=0;const ship=currentShip();lives=3+Math.floor(upgradeLevel('hull')/2)+(ship.lives||0);ghostUsed=false;collisionCooldown=0;spawn=0;starSpawn=.8;rocks=[];stars=[];particles=[];powerups=[];gates=[];eventTimer=12;eventLeft=0;activeEvent=null;eventCycle=0;gateTimer=12;powerSpawnTimer=9;shieldHits=0;shieldTimer=0;activeBuff=null;buffTimer=0;player.x=W/2;player.y=H*.82;clampPlayer();state='play';$('menuOverlay').classList.add('hidden');$('gameHud').classList.remove('hidden');$('touch').classList.remove('hidden');$('runStatus').classList.remove('hidden');$('pauseBtn').textContent='Ⅱ';updateHUD();updateRunStatus();gameplayStart();ensureAudio();playSfx('start');startMusic()}
 function pauseRun(){
   if(state==='play'){
     pausedByUser=true;pausedByPlatform=false;
@@ -638,27 +638,28 @@ function showRunResults(){
 }
 function updateHUD(){$('hudScore').textContent=score;$('hudLives').textContent=lives;$('hudCrystals').textContent=profile.crystals}
 function difficultyProfile(){
-  // Кривая сложности: более плотные волны, ускорение и новые преследующие астероиды.
-  if(elapsed<30)return{tier:0,rockInterval:Math.max(.30,.82-elapsed*.008),rockSpeed:1,drifterChance:.20,hunterChance:0,gateRatio:.34,gateInterval:22,eventRest:18,powerChance:.82,powerMin:10,powerSpan:6};
-  if(elapsed<65)return{tier:1,rockInterval:Math.max(.30,.58-(elapsed-30)*.006),rockSpeed:1.08,drifterChance:.24,hunterChance:.07,gateRatio:.31,gateInterval:19,eventRest:15,powerChance:.84,powerMin:9,powerSpan:6};
-  if(elapsed<100)return{tier:2,rockInterval:Math.max(.28,.37-(elapsed-65)*.0025),rockSpeed:1.15,drifterChance:.27,hunterChance:.13,gateRatio:.29,gateInterval:17,eventRest:13,powerChance:.88,powerMin:8,powerSpan:5};
-  return{tier:3,rockInterval:.28,rockSpeed:1.22,drifterChance:.29,hunterChance:.18,gateRatio:.27,gateInterval:15,eventRest:11,powerChance:.90,powerMin:8,powerSpan:4};
+  // v4.9: steeper survival curve. Each tier adds pressure without removing dodge windows.
+  if(elapsed<20)return{tier:0,rockInterval:.62,rockSpeed:1.08,drifterChance:.22,hunterChance:0,extraWaveChance:0,gateRatio:.31,gateInterval:18,eventRest:15,powerChance:.80,powerMin:10,powerSpan:5};
+  if(elapsed<45)return{tier:1,rockInterval:.43,rockSpeed:1.18,drifterChance:.27,hunterChance:.10,extraWaveChance:0,gateRatio:.285,gateInterval:14,eventRest:11,powerChance:.80,powerMin:9,powerSpan:5};
+  if(elapsed<75)return{tier:2,rockInterval:.32,rockSpeed:1.30,drifterChance:.30,hunterChance:.18,extraWaveChance:.08,gateRatio:.26,gateInterval:11,eventRest:8,powerChance:.82,powerMin:9,powerSpan:4};
+  if(elapsed<110)return{tier:3,rockInterval:.265,rockSpeed:1.40,drifterChance:.32,hunterChance:.23,extraWaveChance:.13,gateRatio:.24,gateInterval:9.5,eventRest:6,powerChance:.84,powerMin:8,powerSpan:4};
+  return{tier:4,rockInterval:.23,rockSpeed:1.48,drifterChance:.34,hunterChance:.27,extraWaveChance:.17,gateRatio:.22,gateInterval:8.5,eventRest:5,powerChance:.86,powerMin:8,powerSpan:3};
 }
 function spawnRock(){
   const difficulty=difficultyProfile(),roll=Math.random();
-  const kind=roll<.18?'shard':roll<.18+difficulty.hunterChance?'hunter':roll<.18+difficulty.hunterChance+difficulty.drifterChance?'drifter':'rock';
+  const kind=roll<.16?'shard':roll<.16+difficulty.hunterChance?'hunter':roll<.16+difficulty.hunterChance+difficulty.drifterChance?'drifter':'rock';
   const r=kind==='shard'?10+Math.random()*8:kind==='hunter'?13+Math.random()*5:14+Math.random()*19;
-  const baseSpeed=190+Math.random()*90+Math.min(210,elapsed*2.6);
-  const speedFactor=difficulty.rockSpeed*(kind==='shard'?1.38:kind==='hunter'?.94:1);
-  rocks.push({kind,x:r+Math.random()*(W-2*r),y:-r,r,vy:baseSpeed*speedFactor,vx:kind==='drifter'?(Math.random()<.5?-1:1)*(55+Math.random()*50+difficulty.tier*12):0,homing:kind==='hunter'?72+difficulty.tier*10:0,rot:Math.random()*6,spin:(Math.random()-.5)*3});
+  const baseSpeed=195+Math.random()*95+Math.min(260,elapsed*3.1);
+  const speedFactor=difficulty.rockSpeed*(kind==='shard'?1.42:kind==='hunter'?.98:1);
+  rocks.push({kind,x:r+Math.random()*(W-2*r),y:-r,r,vy:baseSpeed*speedFactor,vx:kind==='drifter'?(Math.random()<.5?-1:1)*(70+Math.random()*65+difficulty.tier*16):0,homing:kind==='hunter'?105+difficulty.tier*14:0,rot:Math.random()*6,spin:(Math.random()-.5)*3});
 }
 function spawnStar(){stars.push({x:18+Math.random()*(W-36),y:-15,r:10,vy:170+elapsed*2,phase:Math.random()*6})}
 function spawnPowerup(){const types=['shield','magnet','slow'];const type=types[Math.floor(Math.random()*types.length)];powerups.push({type,x:24+Math.random()*(W-48),y:-24,r:15,vy:145+Math.min(55,elapsed*.7),phase:Math.random()*6})}
 function spawnGate(){const difficulty=difficultyProfile();const gapW=Math.max(108,Math.min(184,W*difficulty.gateRatio));const margin=gapW/2+12;const baseGap=margin+Math.random()*Math.max(1,W-2*margin);gates.push({y:-24,gapX:baseGap,baseGap,gapW,vy:(155+Math.min(45,elapsed*.45))*(1+difficulty.tier*.035),phase:Math.random()*6,swing:Math.min(65,W*.10)*(difficulty.tier>=2?1.15:1),passed:false})}
 function startEvent(){const events=[
-  {id:'meteor',title:'МЕТЕОРИТНЫЙ ДОЖДЬ',duration:8},
-  {id:'crystal',title:'КРИСТАЛЬНЫЙ РАШ',duration:10},
-  {id:'wind',title:'ГРАВИТАЦИОННЫЙ ШТОРМ',duration:9}
+  {id:'meteor',title:'МЕТЕОРИТНЫЙ ДОЖДЬ',duration:9},
+  {id:'crystal',title:'КРИСТАЛЬНЫЙ РАШ',duration:11},
+  {id:'wind',title:'ГРАВИТАЦИОННЫЙ ШТОРМ',duration:10}
 ];const e=events[eventCycle%events.length];activeEvent=e.id;eventLeft=e.duration;eventCycle++;playSfx('event');updateRunStatus()}
 function eventLabel(){return activeEvent==='meteor'?'☄ МЕТЕОРИТНЫЙ ДОЖДЬ':activeEvent==='crystal'?'✦ КРИСТАЛЬНЫЙ РАШ':'〰 ГРАВИТАЦИОННЫЙ ШТОРМ'}
 function updateRunStatus(){const eb=$('eventBadge'),pb=$('powerBadge'),unit=currentLanguage==='en'?'s':'с';if(activeEvent){eb.textContent=translateText(eventLabel())+` · ${Math.ceil(eventLeft)}${unit}`;eb.classList.remove('hidden')}else eb.classList.add('hidden');let label='';if(shieldHits>0)label=`◇ ЩИТ · ${Math.ceil(shieldTimer)}${unit}`;else if(activeBuff==='magnet')label=`✧ МАГНИТ · ${Math.ceil(buffTimer)}${unit}`;else if(activeBuff==='slow')label=`◷ ЗАМЕДЛЕНИЕ · ${Math.ceil(buffTimer)}${unit}`;if(label){pb.textContent=translateText(label);pb.classList.remove('hidden')}else pb.classList.add('hidden')}
@@ -666,7 +667,7 @@ function activatePowerup(p){if(p.type==='shield'){shieldHits=1;shieldTimer=12;bu
 function burst(x,y,color,n=10){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=50+Math.random()*190;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.35+Math.random()*.4,color})}}
 function collectStar(s){s.y=H+100;starsThisRun++;profile.stats.totalStars++;const reward=activeEvent==='crystal'?4:2;profile.crystals+=reward;runCrystals+=reward;saveProgress(false);score+=activeEvent==='crystal'?160:100;burst(s.x,s.y,'#ffe77a',12);const now=performance.now();if(now-lastStarSfxAt>75){playSfx('star');lastStarSfxAt=now}updateHUD()}
 function hitPlayer(color='#ff6388'){
-  collisionCooldown=.75;
+  collisionCooldown=.62;
   if(shieldHits>0){shieldHits=0;shieldTimer=0;burst(player.x,player.y,'#73eaff',24);playSfx('shieldHit');updateRunStatus();return}
   if(currentShip().revive&&!ghostUsed){ghostUsed=true;burst(player.x,player.y,currentShip().color,22);playSfx('phase');return}
   lives--;burst(player.x,player.y,color,18);playSfx('hit');if(lives<=0){updateHUD();finishRun()}
@@ -679,10 +680,10 @@ function update(dt){if(state!=='play')return;const ship=currentShip(),u=profile.
   player.x+=moveX*speed*dt;player.y+=moveY*speed*dt;
   if(activeEvent==='wind')player.x+=Math.sin(elapsed*3.2)*72*dt;
   clampPlayer();
-  if(activeEvent){eventLeft-=dt;if(eventLeft<=0){activeEvent=null;eventTimer=difficulty.eventRest+Math.random()*2;playSfx('eventEnd');updateRunStatus()}}else{eventTimer-=dt;if(eventTimer<=0)startEvent()}
+  if(activeEvent){eventLeft-=dt;if(eventLeft<=0){activeEvent=null;eventTimer=difficulty.eventRest+Math.random()*1.5;playSfx('eventEnd');updateRunStatus()}}else{eventTimer-=dt;if(eventTimer<=0)startEvent()}
   spawn+=dt;starSpawn+=dt;powerSpawnTimer-=dt;gateTimer-=dt;
-  const baseRockInterval=difficulty.rockInterval,rockInterval=activeEvent==='meteor'?Math.max(.20,baseRockInterval*.58):baseRockInterval;
-  if(spawn>rockInterval){spawn=0;spawnRock()}
+  const baseRockInterval=difficulty.rockInterval,rockInterval=activeEvent==='meteor'?Math.max(.16,baseRockInterval*.48):baseRockInterval;
+  if(spawn>rockInterval){spawn=0;spawnRock();if(Math.random()<difficulty.extraWaveChance+(activeEvent==='meteor'?.08:0))spawnRock()}
   const baseStarInterval=Math.max(.8,2.4-elapsed*.006)*(1-u.scanner*.06),starInterval=activeEvent==='crystal'?.66:baseStarInterval;
   if(starSpawn>starInterval){starSpawn=0;spawnStar()}
   if(powerSpawnTimer<=0){if(Math.random()<difficulty.powerChance)spawnPowerup();powerSpawnTimer=difficulty.powerMin+Math.random()*difficulty.powerSpan}
