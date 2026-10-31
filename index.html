@@ -560,10 +560,61 @@ function pauseRun(){
     if(!platformPaused){pausedByPlatform=false;resumeInterface(true)}
   }
 }
-function finishRun(){state='over';pausedByUser=false;pausedByPlatform=false;stopMusic();gameplayStop();const before=levelInfo().level;const previousBest=profile.stats.best,previousTime=profile.stats.bestFlightSeconds,previousBosses=profile.stats.bestBosses;profile.stats.runs++;profile.stats.totalSeconds+=Math.floor(elapsed);profile.stats.totalScore+=score;profile.stats.best=Math.max(profile.stats.best,score);profile.stats.bestFlightSeconds=Math.max(profile.stats.bestFlightSeconds,Math.floor(elapsed));profile.stats.totalBosses+=bossesThisRun;profile.stats.bestBosses=Math.max(profile.stats.bestBosses,bossesThisRun);const improvedLeaderboards=[];if(profile.stats.best>previousBest)improvedLeaderboards.push('score');if(profile.stats.bestFlightSeconds>previousTime)improvedLeaderboards.push('time');if(profile.stats.bestBosses>previousBosses)improvedLeaderboards.push('bosses');best=profile.stats.best;
-  const timeBonus=Math.floor(elapsed/30)*3,scoreBonus=Math.floor(score/5000)*3;runBonus=timeBonus+scoreBonus;profile.crystals+=runBonus;runCrystals+=runBonus;
-  runXp=Math.floor(elapsed*2+score/35+starsThisRun*8);profile.totalXp+=runXp;const after=levelInfo().level;levelGained=Math.max(0,after-before);if(levelGained){const levelReward=levelGained*20;profile.crystals+=levelReward;runCrystals+=levelReward}
-  saveProgress(true);if(improvedLeaderboards.length)queueBestLeaderboardScores(improvedLeaderboards);$('menuOverlay').classList.remove('hidden');$('gameHud').classList.add('hidden');$('touch').classList.add('hidden');$('runStatus').classList.add('hidden');renderScreen();playSfx('finish')}
+function finishRun(){
+  if(state!=='play')return;
+  state='over';pausedByUser=false;pausedByPlatform=false;stopMusic();gameplayStop();
+  const before=levelInfo().level;
+  const previousBest=profile.stats.best,previousTime=profile.stats.bestFlightSeconds,previousBosses=profile.stats.bestBosses;
+  profile.stats.runs++;profile.stats.totalSeconds+=Math.floor(elapsed);profile.stats.totalScore+=score;
+  profile.stats.best=Math.max(profile.stats.best,score);
+  profile.stats.bestFlightSeconds=Math.max(profile.stats.bestFlightSeconds,Math.floor(elapsed));
+  profile.stats.totalBosses+=bossesThisRun;profile.stats.bestBosses=Math.max(profile.stats.bestBosses,bossesThisRun);
+  const improvedLeaderboards=[];
+  if(profile.stats.best>previousBest)improvedLeaderboards.push('score');
+  if(profile.stats.bestFlightSeconds>previousTime)improvedLeaderboards.push('time');
+  if(profile.stats.bestBosses>previousBosses)improvedLeaderboards.push('bosses');
+  best=profile.stats.best;
+  const timeBonus=Math.floor(elapsed/30)*3,scoreBonus=Math.floor(score/5000)*3;
+  runBonus=timeBonus+scoreBonus;profile.crystals+=runBonus;runCrystals+=runBonus;
+  runXp=Math.floor(elapsed*2+score/35+starsThisRun*8);profile.totalXp+=runXp;
+  const after=levelInfo().level;levelGained=Math.max(0,after-before);
+  if(levelGained){const levelReward=levelGained*20;profile.crystals+=levelReward;runCrystals+=levelReward}
+  saveProgress(true);
+  if(improvedLeaderboards.length)queueBestLeaderboardScores(improvedLeaderboards);
+  $('menuOverlay').classList.add('hidden');
+  $('gameHud').classList.add('hidden');$('touch').classList.add('hidden');$('runStatus').classList.add('hidden');
+  // The run has ended and progress has been saved. Show a fullscreen ad only
+  // when the Pikabu SDK says it is supported and currently available.
+  showFullscreenAdBetweenRuns().finally(showRunResults);
+}
+async function showFullscreenAdBetweenRuns(){
+  const ad=pkbSdk?.ads?.fullscreen;
+  if(!ad||!ad.isSupported)return false;
+  try{
+    const canShow=await ad.canShow();
+    if(!canShow)return false;
+    // Gameplay is already stopped by finishRun(); pause Web Audio during the ad.
+    if(audio&&audio.state==='running')await audio.suspend().catch(()=>{});
+    const result=await ad.show();
+    if(result?.rendered===true){
+      console.info('Pikabu fullscreen ad rendered between flights');
+      return true;
+    }
+    console.info('Pikabu fullscreen ad was not rendered:',result?.reason||'UNKNOWN');
+    return false;
+  }catch(error){
+    console.warn('Pikabu fullscreen ad failed; continuing to results',error);
+    return false;
+  }finally{
+    if(soundOn&&audio&&audio.state==='suspended')await audio.resume().catch(()=>{});
+  }
+}
+function showRunResults(){
+  state='over';pausedByUser=false;pausedByPlatform=false;
+  $('menuOverlay').classList.remove('hidden');
+  $('gameHud').classList.add('hidden');$('touch').classList.add('hidden');$('runStatus').classList.add('hidden');
+  renderScreen();playSfx('finish');
+}
 function updateHUD(){$('hudScore').textContent=score;$('hudLives').textContent=lives;$('hudCrystals').textContent=profile.crystals}
 function spawnRock(){
   const roll=Math.random(),kind=roll<.2?'shard':roll<.43?'drifter':'rock';
