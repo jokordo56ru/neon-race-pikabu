@@ -561,7 +561,7 @@ function pauseRun(){
   }
 }
 function finishRun(){
-  if(state!=='play')return;
+  if(state!=='play'&&state!=='paused')return;
   state='over';pausedByUser=false;pausedByPlatform=false;stopMusic();gameplayStop();
   const before=levelInfo().level;
   const previousBest=profile.stats.best,previousTime=profile.stats.bestFlightSeconds,previousBosses=profile.stats.bestBosses;
