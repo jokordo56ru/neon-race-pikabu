@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#080d1d">
-<title>НЕОН-РЕЙС 5.1 — DODGE SURVIVOR</title>
+<title>НЕОН-РЕЙС 5.2 — DODGE SURVIVOR</title>
 <style>
 :root{color-scheme:dark;--bg:#080d1d;--panel:#101a35;--line:#47618b88;--muted:#a9bbdc;--cyan:#5deaff;--purple:#9a83ff;--gold:#ffe27a;--green:#78f0b5;--danger:#ff8096}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;touch-action:pan-y;user-select:none;-webkit-tap-highlight-color:transparent}
@@ -108,8 +108,8 @@ function detectLanguage(){
 let currentLanguage=detectLanguage();
 const TRANSLATIONS={
   'Игровое поле Неон-рейс':'Neon Race game field','Звук':'Sound','Пауза':'Pause','Экранное управление':'Touch controls','Влево':'Left','Вверх':'Up','Вниз':'Down','Вправо':'Right','Включить или выключить звук':'Toggle sound','НЕОН-РЕЙС':'NEON RACE','КОСМИЧЕСКАЯ АРКАДА':'SPACE ARCADE','СЧЁТ':'SCORE','УРОВЕНЬ':'LEVEL','ПОЛЁТ':'FLIGHT','АНГАР':'HANGAR','УЛУЧШЕНИЯ':'UPGRADES','ПИЛОТ':'PILOT','ТОП':'LEADERBOARDS','Прогресс сохраняется автоматически':'Progress is saved automatically','← → ↑ ↓ / WASD · На телефоне — джойстик или перетаскивание':'← → ↑ ↓ / WASD · On mobile, use the on-screen controls or drag',
-  'Стриж':'Swift','Сбалансированный корабль для первых полётов.':'A balanced ship for your first flights.','Без особых бонусов':'No special perks','Фантом':'Phantom','Лёгкий корпус и отзывчивые двигатели.':'A light hull and responsive engines.','+12% к скорости управления':'+12% movement speed','Страж':'Guardian','Усиленная конструкция выдерживает больше ударов.':'Reinforced construction withstands more hits.','+1 дополнительная жизнь':'+1 extra life','Магнит':'Magnet','Энергетический контур притягивает звёзды.':'An energy field attracts stars.','+20 к радиусу сбора':'+20 collection radius','Призрак':'Wraith','Фазовый двигатель один раз спасает от столкновения.':'A phase engine saves you from one collision.','Игнорирует первое столкновение':'Survives the first collision',
-  'Двигатель':'Engine','Каждый уровень увеличивает скорость перемещения на 7%.':'Each level increases movement speed by 7%.','Скорость +':'Speed +','Радиус сбора +':'Collection radius +','Расширяет радиус, в котором корабль подбирает звёзды.':'Increases the radius in which the ship collects stars.','Корпус':'Hull','Каждые два уровня дают одну дополнительную жизнь в начале заезда.':'Every two levels grant one extra life at the start of a run.','Дополнительные жизни +':'Extra lives +','Сканер':'Scanner','Звёзды появляются чаще — больше возможностей заработать кристаллы.':'Stars appear more often, giving you more chances to earn crystals.','Звёзды чаще на':'Star spawn rate +','Реактор':'Reactor','Увеличивает количество очков, получаемых за время в полёте.':'Increases the points earned for time spent in flight.','Очки за время +':'Flight score +',
+  'Стриж':'Swift','Сбалансированный корабль для первых полётов.':'A balanced ship for your first flights.','Без особых бонусов':'No special perks','Фантом':'Phantom','Лёгкий корпус и отзывчивые двигатели.':'A light hull and responsive engines.','+18% к скорости движения':'+18% movement speed','Страж':'Guardian','Усиленная конструкция выдерживает больше ударов.':'Reinforced construction withstands more hits.','+2 дополнительные жизни':'+2 extra lives','Магнит':'Magnet','Энергетический контур притягивает звёзды.':'An energy field attracts stars.','+45 к радиусу сбора':'+45 collection radius','Призрак':'Wraith','Фазовый двигатель один раз спасает от столкновения.':'A phase engine saves you from one collision.','Игнорирует первое столкновение':'Survives the first collision',
+  'Двигатель':'Engine','Каждый уровень увеличивает скорость перемещения на 12%.':'Each level increases movement speed by 12%.','Скорость +':'Speed +','Радиус сбора +':'Collection radius +','Сильно расширяет радиус сбора звёзд и энергии.':'Greatly increases the collection radius for stars and energy.','Корпус':'Hull','Каждый уровень даёт одну дополнительную жизнь в начале заезда.':'Each level grants one extra life at the start of a run.','Дополнительные жизни +':'Extra lives +','Сканер':'Scanner','Чаще обнаруживает звёзды — больше кристаллов и повышений уровня в полёте.':'Finds stars more often, providing more crystals and in-run level-ups.','Частота звёзд +':'Star spawn rate +','Реактор':'Reactor','Увеличивает количество очков, получаемых за время в полёте.':'Increases the points earned for time spent in flight.','Очки за время +':'Flight score +','Экранирование':'Shield System','Каждый уровень добавляет один заряд щита в начале полёта. Заряд действует дольше с каждым уровнем.':'Each level grants one shield charge at the start of a flight. The shield lasts longer with each level.','Стартовые заряды щита +':'Starting shield charges +',
   'Лучший результат':'Highest Score','Максимальное количество очков за один полёт.':'The highest score earned in a single flight.','Выносливость':'Longest Flight','Самый продолжительный полёт. Значение отправляется в миллисекундах.':'Your longest flight. The value is submitted in milliseconds.','Охотник на боссов':'Boss Hunter','Максимум побеждённых боссов за один полёт.':'The most bosses defeated in a single run.',
   'Облачное и локальное сохранение включены':'Cloud and local saves are enabled','Прогресс сохранён на устройстве':'Progress saved on this device','Не удалось сохранить локальный прогресс':'Could not save local progress','Локальный прогресс сохранён; облако временно недоступно':'Local progress saved; cloud storage is temporarily unavailable','SDK подключён; локальное сохранение активно':'SDK connected; local saving is active','Офлайн-режим: локальное сохранение активно':'Offline mode: local saving is active','Локальный режим: прогресс сохраняется на устройстве; SDK Яндекса включается в Консоли':'Local mode: progress is saved on this device. Enable the Yandex SDK in the Developer Console.','SDK загружен некорректно; доступно локальное сохранение':'SDK did not load correctly; local saving is available','SDK не загрузился; доступно локальное сохранение':'SDK could not be loaded; local saving is available','Запрошена синхронизация облачного сохранения':'Cloud save synchronization requested','Открывается авторизация Яндекса…':'Opening Yandex authorization…','Можно продолжить без авторизации; локальное сохранение работает':'You can continue without signing in; local saving is available','Прогресс синхронизируется с облаком':'Progress is syncing with the cloud',
   'РЕКЛАМА ОТКРЫТА…':'AD OPEN…','РЕКЛАМА НЕДОСТУПНА':'AD UNAVAILABLE','СМОТРЕТЬ ВИДЕО · +':'WATCH VIDEO · +','🎬 Бонус за просмотр рекламы':'🎬 Watch an ad for a bonus','Посмотри добровольный рекламный ролик и получи ':'Watch an optional video ad and get ',' кристаллов. Награда начисляется только после подтверждения просмотра Яндексом.':' crystals. The reward is granted only after Yandex confirms the view.','Видео по желанию · награду можно получить после просмотра':'Optional video · claim a reward after watching','Доступно после подключения SDK и монетизации в Консоли':'Available after enabling the SDK and monetization in the Developer Console','Награда получена: +':'Reward received: +',' кристаллов!':' crystals!','Не удалось загрузить видео. Попробуй позже.':'Could not load the video. Try again later.','Просмотр не был засчитан — награда не начислена.':'The view was not counted — no reward was granted.','Реклама сейчас недоступна. Попробуй позже.':'Ads are currently unavailable. Try again later.','Реклама пока недоступна. Проверь подключение монетизации в Консоли Яндекс Игр.':'Ads are not available yet. Check monetization settings in the Yandex Games Console.','Подготавливаем рекламное видео…':'Preparing the video ad…','Смотри видео до конца, чтобы получить награду.':'Watch the video to the end to receive your reward.','Яндекс засчитал просмотр. Начислено +':'Yandex confirmed the view. Added +',' кристаллов.':' crystals.','Выключить звук':'Mute sound','Включить звук':'Unmute sound','Звук включён':'Sound on','Звук выключен':'Sound off',
@@ -217,13 +217,13 @@ function applyLanguageShell(){
 const SAVE_KEY = 'neonRaceProgress_v3';
 const SHIPS = [
   {id:'scout', name:'Стриж', price:0, level:1, color:'#5deaff', desc:'Стартовый корабль. Надёжная база для первых манёвров.', perk:'Сбалансированные характеристики'},
-  {id:'phantom', name:'Фантом', price:100, level:2, color:'#b78cff', desc:'Лёгкий корпус и отзывчивые двигатели.', perk:'+18% к скорости движения', speed:1.18},
-  {id:'guardian', name:'Страж', price:180, level:4, color:'#ff9b70', desc:'Тяжёлая броня позволяет пережить больше столкновений.', perk:'+2 дополнительные жизни', lives:2},
-  {id:'magnet', name:'Магнит', price:250, level:6, color:'#78f0b5', desc:'Энергетический контур притягивает звёзды издалека.', perk:'+45 к радиусу сбора', magnet:45},
-  {id:'ghost', name:'Призрак', price:400, level:10, color:'#ffe27a', desc:'Фазовый двигатель один раз спасает от столкновения.', perk:'Игнорирует первое столкновение', revive:true},
-  {id:'valkyrie', name:'Валькирия', price:620, level:13, color:'#ff75d8', desc:'Манёвренный корпус для резких уклонений.', perk:'+15% к скорости и +1 жизнь', speed:1.15, lives:1},
-  {id:'bastion', name:'Бастион', price:850, level:17, color:'#ffbf68', desc:'Крепость с усиленным полем защиты.', perk:'+2 жизни и стартовый щит', lives:2, startShield:1},
-  {id:'storm', name:'Шторм', price:1250, level:22, color:'#8aa9ff', desc:'Экспериментальный корабль с мощными маневровыми двигателями.', perk:'+10% скорости и +35 к радиусу сбора', speed:1.10, magnet:35}
+  {id:'phantom', name:'Фантом', price:70, level:2, color:'#b78cff', desc:'Лёгкий корпус и отзывчивые двигатели.', perk:'+18% к скорости движения', speed:1.18},
+  {id:'guardian', name:'Страж', price:130, level:3, color:'#ff9b70', desc:'Усиленная конструкция выдерживает больше ударов.', perk:'+2 дополнительные жизни', lives:2},
+  {id:'magnet', name:'Магнит', price:175, level:4, color:'#78f0b5', desc:'Энергетический контур притягивает звёзды издалека.', perk:'+45 к радиусу сбора', magnet:45},
+  {id:'ghost', name:'Призрак', price:260, level:6, color:'#ffe27a', desc:'Фазовый двигатель один раз спасает от столкновения.', perk:'Игнорирует первое столкновение', revive:true},
+  {id:'valkyrie', name:'Валькирия', price:380, level:8, color:'#ff75d8', desc:'Манёвренный корпус для резких уклонений.', perk:'+15% к скорости и +1 жизнь', speed:1.15, lives:1},
+  {id:'bastion', name:'Бастион', price:520, level:11, color:'#ffbf68', desc:'Крепость с усиленным полем защиты.', perk:'+2 жизни и стартовый щит', lives:2, startShield:1},
+  {id:'storm', name:'Шторм', price:720, level:14, color:'#8aa9ff', desc:'Экспериментальный корабль с мощными маневровыми двигателями.', perk:'+10% скорости и +35 к радиусу сбора', speed:1.10, magnet:35}
 ];
 const RUN_PERKS = [
   {id:'thrusters',title:'Форсаж',icon:'➤',desc:'Скорость корабля увеличивается на 10%.',max:5},
@@ -235,15 +235,16 @@ const RUN_PERKS = [
   {id:'scanner',title:'Сканер-эхо',icon:'✦',desc:'Звёзды появляются на 8% чаще.',max:4}
 ];
 const UPGRADES = [
-  {id:'engine', name:'Двигатель', icon:'⚡', max:5, base:35, step:28, desc:'Каждый уровень увеличивает скорость перемещения на 12%.', effect:l=>'Скорость +'+(l*12)+'%'},
-  {id:'magnet', name:'Магнит', icon:'✧', max:5, base:30, step:24, desc:'Сильно расширяет радиус сбора звёзд и энергии.', effect:l=>'Радиус сбора +'+(l*14)},
-  {id:'hull', name:'Корпус', icon:'⬡', max:5, base:45, step:32, desc:'Каждый уровень даёт одну дополнительную жизнь в начале заезда.', effect:l=>'Дополнительные жизни +'+l},
-  {id:'scanner', name:'Сканер', icon:'⌁', max:5, base:40, step:28, desc:'Чаще обнаруживает звёзды — больше кристаллов и повышений уровня в полёте.', effect:l=>'Частота звёзд +'+(l*12)+'%'},
-  {id:'reactor', name:'Реактор', icon:'✦', max:5, base:50, step:30, desc:'Увеличивает количество очков за время, проведённое в полёте.', effect:l=>'Очки за время +'+(l*10)+'%'}
+  {id:'engine', name:'Двигатель', icon:'⚡', max:5, base:30, step:22, desc:'Каждый уровень увеличивает скорость перемещения на 12%.', effect:l=>'Скорость +'+(l*12)+'%'},
+  {id:'magnet', name:'Магнит', icon:'✧', max:5, base:25, step:18, desc:'Сильно расширяет радиус сбора звёзд и энергии.', effect:l=>'Радиус сбора +'+(l*14)},
+  {id:'hull', name:'Корпус', icon:'⬡', max:5, base:35, step:24, desc:'Каждый уровень даёт одну дополнительную жизнь в начале заезда.', effect:l=>'Дополнительные жизни +'+l},
+  {id:'scanner', name:'Сканер', icon:'⌁', max:5, base:32, step:20, desc:'Чаще обнаруживает звёзды — больше кристаллов и повышений уровня в полёте.', effect:l=>'Частота звёзд +'+(l*12)+'%'},
+  {id:'reactor', name:'Реактор', icon:'✦', max:5, base:35, step:22, desc:'Увеличивает количество очков за время, проведённое в полёте.', effect:l=>'Очки за время +'+(l*10)+'%'},
+  {id:'shield', name:'Экранирование', icon:'◇', max:2, base:65, step:50, desc:'Каждый уровень добавляет один заряд щита в начале полёта. Заряд действует дольше с каждым уровнем.', effect:l=>'Стартовые заряды щита +'+l}
 ];
 const DEFAULT_PROFILE = () => ({
   crystals:0,totalXp:0,unlockedShips:['scout'],selectedShip:'scout',
-  upgrades:{engine:0,magnet:0,hull:0,scanner:0,reactor:0},
+  upgrades:{engine:0,magnet:0,hull:0,scanner:0,reactor:0,shield:0},
   stats:{best:0,bestFlightSeconds:0,bestBosses:0,totalBosses:0,runs:0,totalStars:0,totalSeconds:0,totalScore:0},savedAt:0
 });
 function safeNumber(n,min=0,max=1e9){const v=Number(n);return Number.isFinite(v)?Math.max(min,Math.min(max,Math.floor(v))):min}
@@ -281,8 +282,8 @@ function upgradeLevel(id){return profile.upgrades[id]||0}
 function maxLivesForRun(){return 3+upgradeLevel('hull')+(currentShip().lives||0)+(runBuild.repair||0)}
 function availableRunPerks(){const available=RUN_PERKS.filter(p=>(runBuild[p.id]||0)<p.max);for(let i=available.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[available[i],available[j]]=[available[j],available[i]]}return available.slice(0,3)}
 function openRunLevelUp(){levelUpActive=true;$('runLevelTitle').textContent=runLevel;const choices=availableRunPerks();$('runLevelChoices').innerHTML=translateMarkup(choices.map(p=>'<button class="runPerkCard" data-run-perk="'+p.id+'"><span class="runPerkIcon">'+p.icon+'</span><strong>'+p.title+'</strong><span>'+p.desc+'</span><small>ВЫБРАТЬ УСИЛЕНИЕ</small></button>').join(''));$('levelUpOverlay').classList.remove('hidden');updateHUD()}
-function gainRunEnergy(){runEnergy++;if(runEnergy>=runEnergyNeed){runEnergy-=runEnergyNeed;runLevel++;runEnergyNeed=6+runLevel*2;openRunLevelUp()}}
-function chooseRunPerk(id){if(!levelUpActive)return;const perk=RUN_PERKS.find(p=>p.id===id);if(!perk||(runBuild[id]||0)>=perk.max)return;runBuild[id]++;if(id==='shield'){shieldHits=Math.min(3,shieldHits+1);shieldTimer=22}if(id==='repair')lives=Math.min(maxLivesForRun(),lives+1);levelUpActive=false;$('levelUpOverlay').classList.add('hidden');updateHUD();updateRunStatus();playSfx('buy')}
+function gainRunEnergy(){runEnergy++;if(runEnergy>=runEnergyNeed){runEnergy-=runEnergyNeed;runLevel++;runEnergyNeed=5+runLevel*2;openRunLevelUp()}}
+function chooseRunPerk(id){if(!levelUpActive)return;const perk=RUN_PERKS.find(p=>p.id===id);if(!perk||(runBuild[id]||0)>=perk.max)return;runBuild[id]++;if(id==='shield'){shieldHits=Math.min(3,shieldHits+1);shieldTimer=28+upgradeLevel('shield')*5}if(id==='repair')lives=Math.min(maxLivesForRun(),lives+1);levelUpActive=false;$('levelUpOverlay').classList.add('hidden');updateHUD();updateRunStatus();playSfx('buy')}
 function nextUpgradeCost(u){return u.base+u.step*upgradeLevel(u.id)}
 function levelInfo(totalXp=profile.totalXp){let level=1,remaining=totalXp,need=100;while(remaining>=need&&level<1000){remaining-=need;level++;need=100+(level-1)*50}return {level,into:remaining,need}}
 function saveLocal(){
@@ -629,7 +630,7 @@ function renderPilot(){const lv=levelInfo(),pct=lv.into/lv.need*100,authorized=i
 function renderResults(){const lv=levelInfo();return `<div class="resultHero"><div class="medal">✦</div><h2>ПОЛЁТ ЗАВЕРШЁН</h2><p class="muted" style="margin:0">Отличная попытка, пилот!</p></div><div class="resultGrid"><div class="resultCard"><strong>${score}</strong><span>ОЧКИ</span></div><div class="resultCard"><strong>${starsThisRun}</strong><span>ЗВЁЗДЫ</span></div><div class="resultCard"><strong>${Math.floor(elapsed)}${currentLanguage==='en'?'s':'с'}</strong><span>ВРЕМЯ</span></div><div class="resultCard"><strong>${bossesThisRun}</strong><span>БОССЫ</span></div></div><div class="resultRewards"><div>Получено кристаллов за звёзды и бонусы: <b style="color:var(--gold)">+${runCrystals}</b></div><div>Получено опыта: <b style="color:var(--cyan)">+${runXp} XP</b></div>${levelGained>0?`<div class="levelUp">НОВЫЙ УРОВЕНЬ! Теперь ты пилот ${lv.level}-го уровня. Бонус: +${levelGained} наградных кристаллов.</div>`:''}<div style="margin-top:5px">Всего кристаллов: <b style="color:var(--gold)">${profile.crystals}</b></div></div>${rewardAdButton('results')}<div class="buttonRow"><button class="primary" data-action="start-run" style="flex:1">ЕЩЁ ОДИН ПОЛЁТ</button><button class="secondary" data-action="go-home">В АНГАР</button></div>`}
 function renderPause(){return `<div class="resultHero"><div class="medal">Ⅱ</div><h2>ПАУЗА</h2><p class="muted">Астероиды подождут. Можешь продолжить или вернуться в ангар.</p></div><div class="buttonRow"><button class="primary" data-action="resume" style="flex:1">ПРОДОЛЖИТЬ</button><button class="secondary" data-action="go-home">В АНГАР</button></div>`}
 function renderScreen(){updateWallet();$('tabs').classList.toggle('hidden',state==='over'||state==='paused');const area=$('screenContent');let markup=state==='over'?renderResults():state==='paused'?renderPause():activeTab==='home'?renderHome():activeTab==='garage'?renderGarage():activeTab==='upgrades'?renderUpgrades():activeTab==='leaderboards'?renderLeaderboards():renderPilot();area.innerHTML=translateMarkup(markup)}
-function startRun(){if(platformPaused)return;pausedByUser=false;pausedByPlatform=false;score=0;scoreCarry=0;elapsed=0;starsThisRun=0;bossesThisRun=0;runCrystals=0;runBonus=0;runXp=0;levelGained=0;runLevel=1;runEnergy=0;runEnergyNeed=6;levelUpActive=false;runBuild={thrusters:0,shield:0,repair:0,magnet:0,stasis:0,phase:0,scanner:0};const ship=currentShip();lives=maxLivesForRun();ghostUsed=false;collisionCooldown=0;spawn=0;starSpawn=.8;rocks=[];stars=[];particles=[];powerups=[];gates=[];eventTimer=12;eventLeft=0;activeEvent=null;eventCycle=0;gateTimer=12;powerSpawnTimer=9;shieldHits=ship.startShield||0;shieldTimer=shieldHits?22:0;activeBuff=null;buffTimer=0;$('levelUpOverlay').classList.add('hidden');player.x=W/2;player.y=H*.82;clampPlayer();state='play';$('menuOverlay').classList.add('hidden');$('gameHud').classList.remove('hidden');$('touch').classList.remove('hidden');$('runStatus').classList.remove('hidden');$('pauseBtn').textContent='Ⅱ';updateHUD();updateRunStatus();gameplayStart();ensureAudio();playSfx('start');startMusic()}
+function startRun(){if(platformPaused)return;pausedByUser=false;pausedByPlatform=false;score=0;scoreCarry=0;elapsed=0;starsThisRun=0;bossesThisRun=0;runCrystals=0;runBonus=0;runXp=0;levelGained=0;runLevel=1;runEnergy=0;runEnergyNeed=5;levelUpActive=false;runBuild={thrusters:0,shield:0,repair:0,magnet:0,stasis:0,phase:0,scanner:0};const ship=currentShip();lives=maxLivesForRun();ghostUsed=false;collisionCooldown=0;spawn=0;starSpawn=.8;rocks=[];stars=[];particles=[];powerups=[];gates=[];eventTimer=12;eventLeft=0;activeEvent=null;eventCycle=0;gateTimer=12;powerSpawnTimer=9;shieldHits=Math.min(2,upgradeLevel('shield')+(ship.startShield||0));shieldTimer=shieldHits?28+upgradeLevel('shield')*5:0;activeBuff=null;buffTimer=0;$('levelUpOverlay').classList.add('hidden');player.x=W/2;player.y=H*.82;clampPlayer();state='play';$('menuOverlay').classList.add('hidden');$('gameHud').classList.remove('hidden');$('touch').classList.remove('hidden');$('runStatus').classList.remove('hidden');$('pauseBtn').textContent='Ⅱ';updateHUD();updateRunStatus();gameplayStart();ensureAudio();playSfx('start');startMusic()}
 function pauseRun(){
   if(levelUpActive)return;
   if(state==='play'){
@@ -655,11 +656,11 @@ function finishRun(){
   if(profile.stats.bestFlightSeconds>previousTime)improvedLeaderboards.push('time');
   if(profile.stats.bestBosses>previousBosses)improvedLeaderboards.push('bosses');
   best=profile.stats.best;
-  const timeBonus=Math.floor(elapsed/30)*3,scoreBonus=Math.floor(score/5000)*3;
-  runBonus=timeBonus+scoreBonus;profile.crystals+=runBonus;runCrystals+=runBonus;
+  const survivalBonus=5,timeBonus=Math.floor(elapsed/25)*4,scoreBonus=Math.floor(score/4000)*4;
+  runBonus=survivalBonus+timeBonus+scoreBonus;profile.crystals+=runBonus;runCrystals+=runBonus;
   runXp=Math.floor(elapsed*2+score/35+starsThisRun*8);profile.totalXp+=runXp;
   const after=levelInfo().level;levelGained=Math.max(0,after-before);
-  if(levelGained){const levelReward=levelGained*20;profile.crystals+=levelReward;runCrystals+=levelReward}
+  if(levelGained){const levelReward=levelGained*25;profile.crystals+=levelReward;runCrystals+=levelReward}
   saveProgress(true);
   if(improvedLeaderboards.length)queueBestLeaderboardScores(improvedLeaderboards);
   $('menuOverlay').classList.add('hidden');
@@ -720,18 +721,18 @@ function showRunResults(){
 }
 function updateHUD(){$('hudScore').textContent=score;$('hudLives').textContent=lives;$('hudCrystals').textContent=profile.crystals;$('hudRunLevel').textContent=runLevel;$('hudRunXP').textContent=runEnergy+'/'+runEnergyNeed}
 function difficultyProfile(){
-  // Hard survival baseline. Permanent and in-run builds are intended to turn this pressure into power.
+  // The opening 20 seconds stay intentionally demanding; later tiers leave more room for earned upgrades to matter.
   if(elapsed<20)return{tier:0,rockInterval:.48,rockSpeed:1.20,drifterChance:.26,hunterChance:.04,extraWaveChance:.02,gateRatio:.29,gateInterval:15,eventRest:12,powerChance:.80,powerMin:10,powerSpan:5};
-  if(elapsed<45)return{tier:1,rockInterval:.36,rockSpeed:1.29,drifterChance:.30,hunterChance:.12,extraWaveChance:.06,gateRatio:.27,gateInterval:12,eventRest:9,powerChance:.82,powerMin:9,powerSpan:5};
-  if(elapsed<75)return{tier:2,rockInterval:.29,rockSpeed:1.38,drifterChance:.33,hunterChance:.20,extraWaveChance:.14,gateRatio:.245,gateInterval:10,eventRest:7,powerChance:.84,powerMin:8,powerSpan:4};
-  if(elapsed<110)return{tier:3,rockInterval:.24,rockSpeed:1.50,drifterChance:.36,hunterChance:.26,extraWaveChance:.20,gateRatio:.225,gateInterval:8.5,eventRest:5.5,powerChance:.86,powerMin:8,powerSpan:4};
-  return{tier:4,rockInterval:.21,rockSpeed:1.58,drifterChance:.38,hunterChance:.30,extraWaveChance:.24,gateRatio:.21,gateInterval:7.5,eventRest:4.5,powerChance:.88,powerMin:7,powerSpan:3};
+  if(elapsed<45)return{tier:1,rockInterval:.38,rockSpeed:1.26,drifterChance:.29,hunterChance:.10,extraWaveChance:.05,gateRatio:.28,gateInterval:13,eventRest:9.5,powerChance:.84,powerMin:8.5,powerSpan:5};
+  if(elapsed<75)return{tier:2,rockInterval:.31,rockSpeed:1.34,drifterChance:.32,hunterChance:.18,extraWaveChance:.12,gateRatio:.255,gateInterval:10.5,eventRest:7.5,powerChance:.86,powerMin:7.5,powerSpan:4.5};
+  if(elapsed<110)return{tier:3,rockInterval:.255,rockSpeed:1.45,drifterChance:.35,hunterChance:.23,extraWaveChance:.18,gateRatio:.235,gateInterval:9,eventRest:6,powerChance:.88,powerMin:7.5,powerSpan:4};
+  return{tier:4,rockInterval:.225,rockSpeed:1.52,drifterChance:.37,hunterChance:.27,extraWaveChance:.22,gateRatio:.22,gateInterval:8,eventRest:5,powerChance:.90,powerMin:7,powerSpan:3};
 }
 function spawnRock(){
   const difficulty=difficultyProfile(),roll=Math.random();
   const kind=roll<.16?'shard':roll<.16+difficulty.hunterChance?'hunter':roll<.16+difficulty.hunterChance+difficulty.drifterChance?'drifter':'rock';
   const r=kind==='shard'?10+Math.random()*8:kind==='hunter'?13+Math.random()*5:14+Math.random()*19;
-  const baseSpeed=195+Math.random()*95+Math.min(260,elapsed*3.1);
+  const baseSpeed=195+Math.random()*95+Math.min(230,elapsed*2.8);
   const speedFactor=difficulty.rockSpeed*(kind==='shard'?1.42:kind==='hunter'?.98:1);
   rocks.push({kind,x:r+Math.random()*(W-2*r),y:-r,r,vy:baseSpeed*speedFactor,vx:kind==='drifter'?(Math.random()<.5?-1:1)*(70+Math.random()*65+difficulty.tier*16):0,homing:kind==='hunter'?105+difficulty.tier*14:0,rot:Math.random()*6,spin:(Math.random()-.5)*3});
 }
@@ -747,7 +748,7 @@ function eventLabel(){return activeEvent==='meteor'?'☄ МЕТЕОРИТНЫЙ 
 function updateRunStatus(){const eb=$('eventBadge'),pb=$('powerBadge'),unit=currentLanguage==='en'?'s':'с';if(activeEvent){eb.textContent=translateText(eventLabel())+` · ${Math.ceil(eventLeft)}${unit}`;eb.classList.remove('hidden')}else eb.classList.add('hidden');let label='';if(shieldHits>0)label=`◇ ЩИТ · ${Math.ceil(shieldTimer)}${unit}`;else if(activeBuff==='magnet')label=`✧ МАГНИТ · ${Math.ceil(buffTimer)}${unit}`;else if(activeBuff==='slow')label=`◷ ЗАМЕДЛЕНИЕ · ${Math.ceil(buffTimer)}${unit}`;if(label){pb.textContent=translateText(label);pb.classList.remove('hidden')}else pb.classList.add('hidden')}
 function activatePowerup(p){if(p.type==='shield'){shieldHits=1;shieldTimer=12;burst(player.x,player.y,'#73eaff',16);playSfx('shield')}else if(p.type==='magnet'){activeBuff='magnet';buffTimer=8;burst(player.x,player.y,'#9c87ff',16);playSfx('magnet')}else{activeBuff='slow';buffTimer=6;burst(player.x,player.y,'#78f0b5',16);playSfx('slow')}updateRunStatus()}
 function burst(x,y,color,n=10){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=50+Math.random()*190;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.35+Math.random()*.4,color})}}
-function collectStar(s){s.y=H+100;starsThisRun++;profile.stats.totalStars++;const reward=activeEvent==='crystal'?4:2;profile.crystals+=reward;runCrystals+=reward;saveProgress(false);score+=activeEvent==='crystal'?160:100;burst(s.x,s.y,'#ffe77a',12);const now=performance.now();if(now-lastStarSfxAt>75){playSfx('star');lastStarSfxAt=now}gainRunEnergy();updateHUD()}
+function collectStar(s){s.y=H+100;starsThisRun++;profile.stats.totalStars++;const reward=activeEvent==='crystal'?5:3;profile.crystals+=reward;runCrystals+=reward;saveProgress(false);score+=activeEvent==='crystal'?160:100;burst(s.x,s.y,'#ffe77a',12);const now=performance.now();if(now-lastStarSfxAt>75){playSfx('star');lastStarSfxAt=now}gainRunEnergy();updateHUD()}
 function hitPlayer(color='#ff6388'){
   collisionCooldown=.62+runBuild.phase*.18;
   if(shieldHits>0){shieldHits=0;shieldTimer=0;burst(player.x,player.y,'#73eaff',24);playSfx('shieldHit');updateRunStatus();return}
@@ -766,7 +767,7 @@ function update(dt){if(state!=='play'||levelUpActive)return;const ship=currentSh
   spawn+=dt;starSpawn+=dt;powerSpawnTimer-=dt;gateTimer-=dt;
   const baseRockInterval=difficulty.rockInterval,rockInterval=activeEvent==='meteor'?Math.max(.16,baseRockInterval*.48):baseRockInterval;
   if(spawn>rockInterval){spawn=0;spawnRock();if(Math.random()<difficulty.extraWaveChance+(activeEvent==='meteor'?.08:0))spawnRock()}
-  const baseStarInterval=Math.max(.55,2.2-elapsed*.005)*(1-u.scanner*.12)*(1-runBuild.scanner*.08),starInterval=activeEvent==='crystal'?.48:baseStarInterval;
+  const baseStarInterval=Math.max(.55,2.0-elapsed*.005)*(1-u.scanner*.12)*(1-runBuild.scanner*.08),starInterval=activeEvent==='crystal'?.48:baseStarInterval;
   if(starSpawn>starInterval){starSpawn=0;spawnStar()}
   if(powerSpawnTimer<=0){if(Math.random()<difficulty.powerChance)spawnPowerup();powerSpawnTimer=difficulty.powerMin+Math.random()*difficulty.powerSpan}
   if(gateTimer<=0){spawnGate();gateTimer=difficulty.gateInterval+Math.random()*3}
