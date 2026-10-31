@@ -1,5 +1,6 @@
-NEON RACE Pikabu SDK build
-Prepared for GitHub Pages static hosting
-Entry point: index.html
-Default locale: Russian (RU)
-Available locale: English (EN)
+NEON RACE — Pikabu Games Edition
+Version: 4.7
+Integrations: Pikabu SDK, Cloud Storage, Rewarded Ads (+50 crystals), Fullscreen Ads between flights
+Entrypoint: index.html
+Languages: Russian (default), English
+Fullscreen frequency is controlled by Pikabu SDK (minimum 120 seconds).
