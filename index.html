@@ -593,6 +593,8 @@ async function showFullscreenAdBetweenRuns(){
   try{
     const canShow=await ad.canShow();
     if(!canShow)return false;
+    // Write the just-finished run to Pikabu storage before opening the ad overlay.
+    if(pkbSdk?.storage)await syncPikabuCloud(false);
     // Gameplay is already stopped by finishRun(); pause Web Audio during the ad.
     if(audio&&audio.state==='running')await audio.suspend().catch(()=>{});
     const result=await ad.show();
