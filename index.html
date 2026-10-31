@@ -751,7 +751,7 @@ function burst(x,y,color,n=10){for(let i=0;i<n;i++){const a=Math.random()*Math.P
 function collectStar(s){s.y=H+100;starsThisRun++;profile.stats.totalStars++;const reward=activeEvent==='crystal'?5:3;profile.crystals+=reward;runCrystals+=reward;saveProgress(false);score+=activeEvent==='crystal'?160:100;burst(s.x,s.y,'#ffe77a',12);const now=performance.now();if(now-lastStarSfxAt>75){playSfx('star');lastStarSfxAt=now}gainRunEnergy();updateHUD()}
 function hitPlayer(color='#ff6388'){
   collisionCooldown=.62+runBuild.phase*.18;
-  if(shieldHits>0){shieldHits=0;shieldTimer=0;burst(player.x,player.y,'#73eaff',24);playSfx('shieldHit');updateRunStatus();return}
+  if(shieldHits>0){shieldHits=Math.max(0,shieldHits-1);if(shieldHits<=0)shieldTimer=0;burst(player.x,player.y,'#73eaff',24);playSfx('shieldHit');updateRunStatus();return}
   if(currentShip().revive&&!ghostUsed){ghostUsed=true;burst(player.x,player.y,currentShip().color,22);playSfx('phase');return}
   lives--;burst(player.x,player.y,color,18);playSfx('hit');if(lives<=0){updateHUD();finishRun()}
 }
