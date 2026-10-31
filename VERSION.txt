@@ -1,0 +1,5 @@
+NEON RACE Pikabu SDK build
+Prepared for GitHub Pages static hosting
+Entry point: index.html
+Default locale: Russian (RU)
+Available locale: English (EN)
