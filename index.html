@@ -33,6 +33,19 @@ button{font:inherit}#game{display:block;width:100%;height:100%;touch-action:none
 @media(max-width:720px){.leaderboardSelectors{grid-template-columns:1fr}.leaderboardAuth{align-items:stretch;flex-direction:column}.leaderboardAuth button{width:100%}.homeGrid{grid-template-columns:1fr}.shipGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.shipCard:last-child{grid-column:span 2}.upgradeGrid{grid-template-columns:1fr}.profileGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{border-radius:19px}.brand small{font-size:9px}.walletItem{font-size:12px;padding:7px 8px}.gameHud{gap:5px;padding:0 8px}.pill{font-size:11px;padding:7px 8px}.iconbtn{width:36px;height:36px}}
 @media(max-height:650px){.panel{max-height:98dvh;padding:14px}.featureCard{min-height:210px}.tabs{margin-bottom:10px}.shipCard{padding:9px}.shipCard .shipVisual{height:58px}.shipCard p{min-height:32px}#touch{bottom:8px;width:132px;height:132px;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:4px}.touchbtn{width:40px;height:40px;font-size:21px}}
 @media(pointer:coarse){#touch{display:grid}}
+.levelUpOverlay{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px;background:#040817dc;backdrop-filter:blur(9px);pointer-events:auto}
+.levelUpPanel{width:min(760px,100%);max-height:92dvh;overflow:auto;padding:clamp(18px,3vw,28px);border:1px solid #68dfffa0;border-radius:24px;background:linear-gradient(155deg,#182b50f7,#0a1228fa);box-shadow:0 20px 90px #000d;text-align:center}
+.levelUpKicker{color:#80eaff;font-size:12px;font-weight:1000;letter-spacing:1.8px}
+.levelUpPanel h2{margin:10px 0 6px;font-size:clamp(22px,4vw,30px);color:#fff}
+.levelUpPanel>p{margin:0 auto 18px;max-width:500px;color:#afc1e2;font-size:13px;line-height:1.5}
+.runLevelChoices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;text-align:left}
+.runPerkCard{min-height:190px;padding:15px;border:1px solid #5a77a7aa;border-radius:17px;background:linear-gradient(160deg,#1b3157,#101a35);color:#f5f7ff;display:flex;flex-direction:column;align-items:flex-start;gap:9px;text-align:left;cursor:pointer;transition:transform .15s,border-color .15s,background .15s}
+.runPerkCard:hover{transform:translateY(-3px);border-color:#66e9ff;background:linear-gradient(160deg,#23416b,#111e3d)}
+.runPerkIcon{font-size:28px;color:#75eaff;text-shadow:0 0 16px #62dcff66}
+.runPerkCard strong{font-size:15px;line-height:1.2}
+.runPerkCard span:not(.runPerkIcon){font-size:12px;line-height:1.45;color:#b6c8e8}
+.runPerkCard small{margin-top:auto;color:#78eaff;font-size:10px;font-weight:1000;letter-spacing:1px}
+@media(max-width:650px){.runLevelChoices{grid-template-columns:1fr}.runPerkCard{min-height:0;padding:12px;display:grid;grid-template-columns:34px 1fr;gap:4px 10px}.runPerkIcon{grid-row:span 3}.runPerkCard small{margin:4px 0 0}}
 </style>
 </head>
 <body>
@@ -42,6 +55,7 @@ button{font:inherit}#game{display:block;width:100%;height:100%;touch-action:none
     <div class="hudGroup">
       <div class="pill"><span id="hudScoreLabel">СЧЁТ</span> <span id="hudScore">0</span></div>
       <div class="pill">♥ <span id="hudLives">3</span></div>
+      <div class="pill">LV <span id="hudRunLevel">1</span> · <span id="hudRunXP">0/6</span></div>
     </div>
     <div class="hudGroup">
       <div class="pill">✦ <span id="hudCrystals">0</span></div>
@@ -50,6 +64,14 @@ button{font:inherit}#game{display:block;width:100%;height:100%;touch-action:none
     </div>
   </div>
   <div id="runStatus" class="hidden"><span id="eventBadge" class="statusChip event hidden"></span><span id="powerBadge" class="statusChip power hidden"></span></div>
+  <div id="levelUpOverlay" class="levelUpOverlay hidden" role="dialog" aria-modal="true" aria-labelledby="levelUpHeadline">
+    <section class="levelUpPanel">
+      <div class="levelUpKicker">✦ ПОВЫШЕНИЕ УРОВНЯ · <span id="runLevelTitle">2</span></div>
+      <h2 id="levelUpHeadline">ВЫБЕРИ ОДНО УСИЛЕНИЕ</h2>
+      <p>Выбери улучшение для этого полёта. Сочетай оружие, защиту и сбор ресурсов.</p>
+      <div id="runLevelChoices" class="runLevelChoices"></div>
+    </section>
+  </div>
   <div id="touch" class="hidden" aria-label="Экранное управление">
     <button class="touchbtn" id="leftBtn" aria-label="Влево">←</button>
     <button class="touchbtn" id="upBtn" aria-label="Вверх">↑</button>
@@ -127,6 +149,28 @@ const TRANSLATIONS={
   ,'Изменения записаны в хранилище Пикабу; облачная синхронизация выполняется автоматически':'Changes saved to Pikabu storage; cloud sync is running automatically'
   ,'Изменения сохранены; облачная синхронизация выполняется автоматически':'Changes saved; cloud synchronization will complete automatically'
 
+  ,'ВЫБЕРИ ОДНО УСИЛЕНИЕ':'CHOOSE ONE UPGRADE'
+  ,'Выбери улучшение для этого полёта. Сочетай оружие, защиту и сбор ресурсов.':'Choose an upgrade for this flight. Combine weapons, defence and resource gathering.'
+  ,'ВЫБРАТЬ УСИЛЕНИЕ':'CHOOSE UPGRADE'
+  ,'Перегрузка затвора':'Overloaded Trigger','Автопушка стреляет на 12% быстрее.':'The auto-cannon fires 12% faster.'
+  ,'Пробивные импульсы':'Piercing Pulses','Каждый снаряд наносит на 1 урон больше.':'Each projectile deals 1 extra damage.'
+  ,'Раздвоенный залп':'Double Volley','Автопушка выпускает ещё один снаряд за выстрел.':'The auto-cannon fires one additional projectile.'
+  ,'Энергощит':'Energy Shield','Восстанавливает один заряд щита на 22 секунды.':'Restores one shield charge for 22 seconds.'
+  ,'Форсаж':'Afterburner','Скорость корабля увеличивается на 9%.':'Ship movement speed increases by 9%.'
+  ,'Гравитационный захват':'Gravity Pull','Радиус сбора звёзд увеличивается на 28.':'Star collection radius increases by 28.'
+  ,'Аварийный ремонт':'Emergency Repair','Увеличивает запас корпуса и восстанавливает одну жизнь.':'Increases hull capacity and restores one life.'
+  ,'Каждый уровень увеличивает скорость перемещения на 12%.':'Each level increases movement speed by 12%.'
+  ,'Сильно расширяет радиус сбора звёзд и энергии.':'Greatly increases the pickup radius for stars and energy.'
+  ,'Каждый уровень даёт одну дополнительную жизнь в начале заезда.':'Each level grants one extra life at the start of a run.'
+  ,'Чаще обнаруживает звёзды: больше кристаллов и повышений уровня в полёте.':'Finds stars more often: more crystals and in-flight level-ups.'
+  ,'Увеличивает счёт и ускоряет перезарядку автоматической пушки.':'Increases score and speeds up the auto-cannon reload.'
+  ,'Импульсная пушка':'Pulse Cannon','Автоматически атакует ближайшие астероиды. Улучшения ускоряют огонь, повышают урон и добавляют снаряды.':'Automatically attacks nearby asteroids. Upgrades increase fire rate, damage and projectile count.'
+  ,'Валькирия':'Valkyrie','Штурмовой корабль с ускоренной системой наведения.':'An assault ship with an accelerated targeting system.'
+  ,'+1 снаряд и +18% скорострельность':'+1 projectile and +18% fire rate'
+  ,'Бастион':'Bastion','Крепость с усиленным полем защиты.':'A fortress with a reinforced defensive field.'
+  ,'+2 жизни и стартовый щит':'+2 lives and a starting shield'
+  ,'Шторм':'Tempest','Экспериментальная платформа для максимальной огневой мощи.':'An experimental platform built for maximum firepower.'
+  ,'+1 снаряд, +10% скорости и скорострельности':'+1 projectile, +10% speed and fire rate'
 };
 const translationPairs=Object.entries(TRANSLATIONS).sort((a,b)=>b[0].length-a[0].length);
 function translateText(value){
@@ -156,22 +200,35 @@ function applyLanguageShell(){
 }
 const SAVE_KEY = 'neonRaceProgress_v3';
 const SHIPS = [
-  {id:'scout', name:'Стриж', price:0, level:1, color:'#5deaff', desc:'Сбалансированный корабль для первых полётов.', perk:'Без особых бонусов'},
-  {id:'phantom', name:'Фантом', price:100, level:2, color:'#b78cff', desc:'Лёгкий корпус и отзывчивые двигатели.', perk:'+12% к скорости управления', speed:1.12},
-  {id:'guardian', name:'Страж', price:180, level:4, color:'#ff9b70', desc:'Усиленная конструкция выдерживает больше ударов.', perk:'+1 дополнительная жизнь', lives:1},
-  {id:'magnet', name:'Магнит', price:250, level:6, color:'#78f0b5', desc:'Энергетический контур притягивает звёзды.', perk:'+20 к радиусу сбора', magnet:20},
-  {id:'ghost', name:'Призрак', price:400, level:10, color:'#ffe27a', desc:'Фазовый двигатель один раз спасает от столкновения.', perk:'Игнорирует первое столкновение', revive:true}
+  {id:'scout', name:'Стриж', price:0, level:1, color:'#5deaff', desc:'Стартовый корабль. Надёжная база для первой сборки.', perk:'Сбалансированная система огня'},
+  {id:'phantom', name:'Фантом', price:100, level:2, color:'#b78cff', desc:'Лёгкий корпус и отзывчивые двигатели.', perk:'+18% к скорости движения', speed:1.18},
+  {id:'guardian', name:'Страж', price:180, level:4, color:'#ff9b70', desc:'Тяжёлая броня позволяет пережить больше столкновений.', perk:'+2 дополнительные жизни', lives:2},
+  {id:'magnet', name:'Магнит', price:250, level:6, color:'#78f0b5', desc:'Энергетический контур притягивает добычу с большого расстояния.', perk:'+45 к радиусу сбора', magnet:45},
+  {id:'ghost', name:'Призрак', price:400, level:10, color:'#ffe27a', desc:'Фазовый двигатель один раз спасает от столкновения.', perk:'Игнорирует первое столкновение', revive:true},
+  {id:'valkyrie', name:'Валькирия', price:620, level:13, color:'#ff75d8', desc:'Штурмовой корабль с ускоренной системой наведения.', perk:'+1 снаряд и +18% скорострельность', extraShots:1, fireRate:.82},
+  {id:'bastion', name:'Бастион', price:850, level:17, color:'#ffbf68', desc:'Крепость с усиленным полем защиты.', perk:'+2 жизни и стартовый щит', lives:2, startShield:1},
+  {id:'storm', name:'Шторм', price:1250, level:22, color:'#8aa9ff', desc:'Экспериментальная платформа для максимальной огневой мощи.', perk:'+1 снаряд, +10% скорости и скорострельности', extraShots:1, speed:1.10, fireRate:.90}
+];
+const RUN_PERKS = [
+  {id:'rapid',title:'Перегрузка затвора',icon:'⚡',desc:'Автопушка стреляет на 12% быстрее.',max:5},
+  {id:'damage',title:'Пробивные импульсы',icon:'✹',desc:'Каждый снаряд наносит на 1 урон больше.',max:4},
+  {id:'multishot',title:'Раздвоенный залп',icon:'⟡',desc:'Автопушка выпускает ещё один снаряд за выстрел.',max:2},
+  {id:'shield',title:'Энергощит',icon:'◇',desc:'Восстанавливает один заряд щита на 22 секунды.',max:3},
+  {id:'thrusters',title:'Форсаж',icon:'➤',desc:'Скорость корабля увеличивается на 9%.',max:4},
+  {id:'magnet',title:'Гравитационный захват',icon:'✧',desc:'Радиус сбора звёзд увеличивается на 28.',max:3},
+  {id:'repair',title:'Аварийный ремонт',icon:'♥',desc:'Увеличивает запас корпуса и восстанавливает одну жизнь.',max:4}
 ];
 const UPGRADES = [
-  {id:'engine', name:'Двигатель', icon:'⚡', max:5, base:35, step:25, desc:'Каждый уровень увеличивает скорость перемещения на 7%.', effect:l=>`Скорость +${l*7}%`},
-  {id:'magnet', name:'Магнит', icon:'✧', max:5, base:30, step:22, desc:'Расширяет радиус, в котором корабль подбирает звёзды.', effect:l=>`Радиус сбора +${l*5}`},
-  {id:'hull', name:'Корпус', icon:'⬡', max:5, base:45, step:30, desc:'Каждые два уровня дают одну дополнительную жизнь в начале заезда.', effect:l=>`Дополнительные жизни +${Math.floor(l/2)}`},
-  {id:'scanner', name:'Сканер', icon:'⌁', max:5, base:40, step:25, desc:'Звёзды появляются чаще — больше возможностей заработать кристаллы.', effect:l=>`Звёзды чаще на ${l*6}%`},
-  {id:'reactor', name:'Реактор', icon:'✦', max:5, base:50, step:30, desc:'Увеличивает количество очков, получаемых за время в полёте.', effect:l=>`Очки за время +${l*8}%`}
+  {id:'engine', name:'Двигатель', icon:'⚡', max:5, base:35, step:28, desc:'Каждый уровень увеличивает скорость перемещения на 12%.', effect:l=>'Скорость +'+(l*12)+'%'},
+  {id:'magnet', name:'Магнит', icon:'✧', max:5, base:30, step:24, desc:'Сильно расширяет радиус сбора звёзд и энергии.', effect:l=>'Радиус сбора +'+(l*14)},
+  {id:'hull', name:'Корпус', icon:'⬡', max:5, base:45, step:32, desc:'Каждый уровень даёт одну дополнительную жизнь в начале заезда.', effect:l=>'Дополнительные жизни +'+l},
+  {id:'scanner', name:'Сканер', icon:'⌁', max:5, base:40, step:28, desc:'Чаще обнаруживает звёзды: больше кристаллов и повышений уровня в полёте.', effect:l=>'Частота звёзд +'+(l*12)+'%'},
+  {id:'reactor', name:'Реактор', icon:'✦', max:5, base:50, step:30, desc:'Увеличивает счёт и ускоряет перезарядку автоматической пушки.', effect:l=>'Счёт +'+(l*10)+'% · огонь +'+(l*3.5)+'%'},
+  {id:'cannon', name:'Импульсная пушка', icon:'✹', max:5, base:60, step:42, desc:'Автоматически атакует ближайшие астероиды. Улучшения ускоряют огонь, повышают урон и добавляют снаряды.', effect:l=>'Урон '+(1+Math.floor(l/2))+' · залп '+(1+(l>=3?1:0)+(l>=5?1:0))+' снар.'}
 ];
 const DEFAULT_PROFILE = () => ({
   crystals:0,totalXp:0,unlockedShips:['scout'],selectedShip:'scout',
-  upgrades:{engine:0,magnet:0,hull:0,scanner:0,reactor:0},
+  upgrades:{engine:0,magnet:0,hull:0,scanner:0,reactor:0,cannon:0},
   stats:{best:0,bestFlightSeconds:0,bestBosses:0,totalBosses:0,runs:0,totalStars:0,totalSeconds:0,totalScore:0},savedAt:0
 });
 function safeNumber(n,min=0,max=1e9){const v=Number(n);return Number.isFinite(v)?Math.max(min,Math.min(max,Math.floor(v))):min}
@@ -197,13 +254,24 @@ let rewardedAdBusy=false,rewardedAdGranted=false,rewardAdMessage='';
 const LEADERBOARDS={score:{id:'neon_race_score',title:'Лучший результат',description:'Максимальное количество очков за один полёт.',format:'number'},time:{id:'neon_race_flight_time',title:'Выносливость',description:'Самый продолжительный полёт. Значение отправляется в миллисекундах.',format:'time'},bosses:{id:'neon_race_bosses',title:'Охотник на боссов',description:'Максимум побеждённых боссов за один полёт.',format:'number'}};
 let activeLeaderboard='score',leaderboardCache={},leaderboardLoading=false,leaderboardMessage='',leaderboardLastFetch={},leaderboardRequestTimes=[],pendingLeaderboardKey=null,leaderboardSubmitQueue=Promise.resolve(),lastLeaderboardWriteAt=0,bossesThisRun=0;
 let W=0,H=0,dpr=1,state='menu',activeTab='home',score=0,scoreCarry=0,lives=3,elapsed=0,starsThisRun=0,runCrystals=0,runBonus=0,runXp=0,levelGained=0,best=profile.stats.best;
-let player={x:0,y:0,speed:390},rocks=[],stars=[],particles=[],powerups=[],gates=[],keys={},last=0,spawn=0,starSpawn=0,collisionCooldown=0,ghostUsed=false;
+let player={x:0,y:0,speed:390},rocks=[],stars=[],particles=[],powerups=[],gates=[],bullets=[],keys={},last=0,spawn=0,starSpawn=0,collisionCooldown=0,ghostUsed=false;
+let autoFireTimer=.3,runLevel=1,runEnergy=0,runEnergyNeed=6,levelUpActive=false;
+let runBuild={rapid:0,damage:0,multishot:0,shield:0,thrusters:0,magnet:0,repair:0};
 let eventTimer=17,eventLeft=0,activeEvent=null,eventCycle=0,gateTimer=15,powerSpawnTimer=9,shieldHits=0,shieldTimer=0,activeBuff=null,buffTimer=0;
 let soundOn=(()=>{try{return localStorage.getItem('neonRaceSound')!=='off'}catch(_){return true}})();
 let audio=null,masterGain=null,musicGain=null,sfxGain=null,musicTimer=null,musicStep=0,nextMusicTime=0,gameplayRunning=false,lastStarSfxAt=0;
 let yandexEventsBound=false,platformPaused=false,pausedByUser=false,pausedByPlatform=false;
 function currentShip(){return SHIPS.find(s=>s.id===profile.selectedShip)||SHIPS[0]}
 function upgradeLevel(id){return profile.upgrades[id]||0}
+function maxLivesForRun(){return 3+upgradeLevel('hull')+(currentShip().lives||0)+(runBuild.repair||0)}
+function weaponStats(){
+  const ship=currentShip(),level=upgradeLevel('cannon'),reactor=upgradeLevel('reactor');
+  return{cooldown:Math.max(.34,(1.60-level*.18)*(1-reactor*.025)*(ship.fireRate||1)*Math.pow(.90,runBuild.rapid)),damage:1+Math.floor(level/2)+runBuild.damage+(ship.weaponDamage||0),shots:Math.min(5,1+(level>=3?1:0)+(level>=5?1:0)+runBuild.multishot+(ship.extraShots||0))};
+}
+function availableRunPerks(){const available=RUN_PERKS.filter(p=>(runBuild[p.id]||0)<p.max);for(let i=available.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[available[i],available[j]]=[available[j],available[i]]}return available.slice(0,3)}
+function openRunLevelUp(){levelUpActive=true;$('runLevelTitle').textContent=runLevel;const choices=availableRunPerks();$('runLevelChoices').innerHTML=translateMarkup(choices.map(p=>'<button class="runPerkCard" data-run-perk="'+p.id+'"><span class="runPerkIcon">'+p.icon+'</span><strong>'+p.title+'</strong><span>'+p.desc+'</span><small>ВЫБРАТЬ УСИЛЕНИЕ</small></button>').join(''));$('levelUpOverlay').classList.remove('hidden');updateHUD()}
+function gainRunEnergy(){runEnergy++;if(runEnergy>=runEnergyNeed){runEnergy-=runEnergyNeed;runLevel++;runEnergyNeed=6+runLevel*2;openRunLevelUp()}}
+function chooseRunPerk(id){if(!levelUpActive)return;const perk=RUN_PERKS.find(p=>p.id===id);if(!perk||(runBuild[id]||0)>=perk.max)return;runBuild[id]++;if(id==='shield'){shieldHits=Math.min(3,shieldHits+1);shieldTimer=22}if(id==='repair')lives=Math.min(maxLivesForRun(),lives+1);levelUpActive=false;$('levelUpOverlay').classList.add('hidden');updateHUD();updateRunStatus();playSfx('buy')}
 function nextUpgradeCost(u){return u.base+u.step*upgradeLevel(u.id)}
 function levelInfo(totalXp=profile.totalXp){let level=1,remaining=totalXp,need=100;while(remaining>=need&&level<1000){remaining-=need;level++;need=100+(level-1)*50}return {level,into:remaining,need}}
 function saveLocal(){
@@ -636,7 +704,7 @@ function showRunResults(){
   $('gameHud').classList.add('hidden');$('touch').classList.add('hidden');$('runStatus').classList.add('hidden');
   renderScreen();playSfx('finish');
 }
-function updateHUD(){$('hudScore').textContent=score;$('hudLives').textContent=lives;$('hudCrystals').textContent=profile.crystals}
+function updateHUD(){$('hudScore').textContent=score;$('hudLives').textContent=lives;$('hudCrystals').textContent=profile.crystals;$('hudRunLevel').textContent=runLevel;$('hudRunXP').textContent=runEnergy+'/'+runEnergyNeed}
 function difficultyProfile(){
   // v4.9: steeper survival curve. Each tier adds pressure without removing dodge windows.
   if(elapsed<20)return{tier:0,rockInterval:.62,rockSpeed:1.08,drifterChance:.22,hunterChance:0,extraWaveChance:0,gateRatio:.31,gateInterval:18,eventRest:15,powerChance:.80,powerMin:10,powerSpan:5};
