@@ -588,24 +588,43 @@ function finishRun(){
   showFullscreenAdBetweenRuns().finally(showRunResults);
 }
 async function showFullscreenAdBetweenRuns(){
-  const ad=pkbSdk?.ads?.fullscreen;
-  if(!ad||!ad.isSupported)return false;
+  const prefix='[NEON-RACE][Fullscreen]';
+  if(!pkbSdk){
+    console.info(prefix,'skipped: Pikabu SDK is not initialized');
+    return false;
+  }
+  const ad=pkbSdk.ads?.fullscreen;
+  if(!ad){
+    console.warn(prefix,'SDK does not expose ads.fullscreen');
+    return false;
+  }
+  console.info(prefix,'availability check',{isSupported:ad.isSupported});
+  if(!ad.isSupported){
+    console.info(prefix,'skipped: NOT_SUPPORTED');
+    return false;
+  }
   try{
     const canShow=await ad.canShow();
-    if(!canShow)return false;
+    console.info(prefix,'canShow() returned',canShow);
+    if(!canShow){
+      console.info(prefix,'skipped: canShow() returned false (cooldown or temporary unavailability)');
+      return false;
+    }
     // Write the just-finished run to Pikabu storage before opening the ad overlay.
-    if(pkbSdk?.storage)await syncPikabuCloud(false);
+    if(pkbSdk.storage)await syncPikabuCloud(false);
     // Gameplay is already stopped by finishRun(); pause Web Audio during the ad.
     if(audio&&audio.state==='running')await audio.suspend().catch(()=>{});
+    console.info(prefix,'calling show()');
     const result=await ad.show();
+    console.info(prefix,'show() result',result);
     if(result?.rendered===true){
-      console.info('Pikabu fullscreen ad rendered between flights');
+      console.info(prefix,'fullscreen slot was rendered');
       return true;
     }
-    console.info('Pikabu fullscreen ad was not rendered:',result?.reason||'UNKNOWN');
+    console.warn(prefix,'fullscreen slot was not rendered',result?.reason||'UNKNOWN');
     return false;
   }catch(error){
-    console.warn('Pikabu fullscreen ad failed; continuing to results',error);
+    console.warn(prefix,'fullscreen request failed; continuing to results',error);
     return false;
   }finally{
     if(soundOn&&audio&&audio.state==='suspended')await audio.resume().catch(()=>{});
