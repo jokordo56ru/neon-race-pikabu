@@ -265,7 +265,7 @@ profile=loadLocal();
 let ysdk=null, yPlayer=null, pkbSdk=null, pkbPlayer=null, cloudReady=false, cloudBusy=false, cloudQueued=false;
 let pkbSdkInitialized=false,pkbSdkLoadStarted=false,pkbSaveTimer=null,pkbFlushBusy=false,pkbLastFlushAt=0,pkbStorageError=null,pkbAuthUnsubscribe=null,pkbStorageUnsubscribe=null;
 let lastCloudSyncAt=0,lastStatsSyncAt=0,sdkInitialized=false,sdkLoadStarted=false;
-const REWARDED_AD_CRYSTALS=20;
+const REWARDED_AD_CRYSTALS=50;
 let rewardedAdBusy=false,rewardedAdGranted=false,rewardAdMessage='';
 const LEADERBOARDS={score:{id:'neon_race_score',title:'Лучший результат',description:'Максимальное количество очков за один полёт.',format:'number'},time:{id:'neon_race_flight_time',title:'Выносливость',description:'Самый продолжительный полёт. Значение отправляется в миллисекундах.',format:'time'},bosses:{id:'neon_race_bosses',title:'Охотник на боссов',description:'Максимум побеждённых боссов за один полёт.',format:'number'}};
 let activeLeaderboard='score',leaderboardCache={},leaderboardLoading=false,leaderboardMessage='',leaderboardLastFetch={},leaderboardRequestTimes=[],pendingLeaderboardKey=null,leaderboardSubmitQueue=Promise.resolve(),lastLeaderboardWriteAt=0,bossesThisRun=0;
