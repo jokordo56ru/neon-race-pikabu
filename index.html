@@ -550,7 +550,7 @@ function renderPilot(){const lv=levelInfo(),pct=lv.into/lv.need*100,authorized=i
 function renderResults(){const lv=levelInfo();return `<div class="resultHero"><div class="medal">✦</div><h2>ПОЛЁТ ЗАВЕРШЁН</h2><p class="muted" style="margin:0">Отличная попытка, пилот!</p></div><div class="resultGrid"><div class="resultCard"><strong>${score}</strong><span>ОЧКИ</span></div><div class="resultCard"><strong>${starsThisRun}</strong><span>ЗВЁЗДЫ</span></div><div class="resultCard"><strong>${Math.floor(elapsed)}${currentLanguage==='en'?'s':'с'}</strong><span>ВРЕМЯ</span></div><div class="resultCard"><strong>${bossesThisRun}</strong><span>БОССЫ</span></div></div><div class="resultRewards"><div>Получено кристаллов за звёзды и бонусы: <b style="color:var(--gold)">+${runCrystals}</b></div><div>Получено опыта: <b style="color:var(--cyan)">+${runXp} XP</b></div>${levelGained>0?`<div class="levelUp">НОВЫЙ УРОВЕНЬ! Теперь ты пилот ${lv.level}-го уровня. Бонус: +${levelGained} наградных кристаллов.</div>`:''}<div style="margin-top:5px">Всего кристаллов: <b style="color:var(--gold)">${profile.crystals}</b></div></div>${rewardAdButton('results')}<div class="buttonRow"><button class="primary" data-action="start-run" style="flex:1">ЕЩЁ ОДИН ПОЛЁТ</button><button class="secondary" data-action="go-home">В АНГАР</button></div>`}
 function renderPause(){return `<div class="resultHero"><div class="medal">Ⅱ</div><h2>ПАУЗА</h2><p class="muted">Астероиды подождут. Можешь продолжить или вернуться в ангар.</p></div><div class="buttonRow"><button class="primary" data-action="resume" style="flex:1">ПРОДОЛЖИТЬ</button><button class="secondary" data-action="go-home">В АНГАР</button></div>`}
 function renderScreen(){updateWallet();$('tabs').classList.toggle('hidden',state==='over'||state==='paused');const area=$('screenContent');let markup=state==='over'?renderResults():state==='paused'?renderPause():activeTab==='home'?renderHome():activeTab==='garage'?renderGarage():activeTab==='upgrades'?renderUpgrades():activeTab==='leaderboards'?renderLeaderboards():renderPilot();area.innerHTML=translateMarkup(markup)}
-function startRun(){if(platformPaused)return;pausedByUser=false;pausedByPlatform=false;score=0;scoreCarry=0;elapsed=0;starsThisRun=0;bossesThisRun=0;runCrystals=0;runBonus=0;runXp=0;levelGained=0;const ship=currentShip();lives=3+Math.floor(upgradeLevel('hull')/2)+(ship.lives||0);ghostUsed=false;collisionCooldown=0;spawn=0;starSpawn=.8;rocks=[];stars=[];particles=[];powerups=[];gates=[];eventTimer=16;eventLeft=0;activeEvent=null;eventCycle=0;gateTimer=14;powerSpawnTimer=8;shieldHits=0;shieldTimer=0;activeBuff=null;buffTimer=0;player.x=W/2;player.y=H*.82;clampPlayer();state='play';$('menuOverlay').classList.add('hidden');$('gameHud').classList.remove('hidden');$('touch').classList.remove('hidden');$('runStatus').classList.remove('hidden');$('pauseBtn').textContent='Ⅱ';updateHUD();updateRunStatus();gameplayStart();ensureAudio();playSfx('start');startMusic()}
+function startRun(){if(platformPaused)return;pausedByUser=false;pausedByPlatform=false;score=0;scoreCarry=0;elapsed=0;starsThisRun=0;bossesThisRun=0;runCrystals=0;runBonus=0;runXp=0;levelGained=0;const ship=currentShip();lives=3+Math.floor(upgradeLevel('hull')/2)+(ship.lives||0);ghostUsed=false;collisionCooldown=0;spawn=0;starSpawn=.8;rocks=[];stars=[];particles=[];powerups=[];gates=[];eventTimer=19;eventLeft=0;activeEvent=null;eventCycle=0;gateTimer=16;powerSpawnTimer=8;shieldHits=0;shieldTimer=0;activeBuff=null;buffTimer=0;player.x=W/2;player.y=H*.82;clampPlayer();state='play';$('menuOverlay').classList.add('hidden');$('gameHud').classList.remove('hidden');$('touch').classList.remove('hidden');$('runStatus').classList.remove('hidden');$('pauseBtn').textContent='Ⅱ';updateHUD();updateRunStatus();gameplayStart();ensureAudio();playSfx('start');startMusic()}
 function pauseRun(){
   if(state==='play'){
     pausedByUser=true;pausedByPlatform=false;
@@ -637,14 +637,24 @@ function showRunResults(){
   renderScreen();playSfx('finish');
 }
 function updateHUD(){$('hudScore').textContent=score;$('hudLives').textContent=lives;$('hudCrystals').textContent=profile.crystals}
+function difficultyProfile(){
+  // Кривая сложности: более плотные волны, ускорение и новые преследующие астероиды.
+  if(elapsed<30)return{tier:0,rockInterval:Math.max(.30,.82-elapsed*.008),rockSpeed:1,drifterChance:.20,hunterChance:0,gateRatio:.34,gateInterval:22,eventRest:18,powerChance:.82,powerMin:10,powerSpan:6};
+  if(elapsed<65)return{tier:1,rockInterval:Math.max(.30,.58-(elapsed-30)*.006),rockSpeed:1.08,drifterChance:.24,hunterChance:.07,gateRatio:.31,gateInterval:19,eventRest:15,powerChance:.84,powerMin:9,powerSpan:6};
+  if(elapsed<100)return{tier:2,rockInterval:Math.max(.28,.37-(elapsed-65)*.0025),rockSpeed:1.15,drifterChance:.27,hunterChance:.13,gateRatio:.29,gateInterval:17,eventRest:13,powerChance:.88,powerMin:8,powerSpan:5};
+  return{tier:3,rockInterval:.28,rockSpeed:1.22,drifterChance:.29,hunterChance:.18,gateRatio:.27,gateInterval:15,eventRest:11,powerChance:.90,powerMin:8,powerSpan:4};
+}
 function spawnRock(){
-  const roll=Math.random(),kind=roll<.2?'shard':roll<.43?'drifter':'rock';
-  const r=kind==='shard'?10+Math.random()*8:14+Math.random()*19;
-  rocks.push({kind,x:r+Math.random()*(W-2*r),y:-r,r,vy:(190+Math.random()*90+elapsed*3)*(kind==='shard'?1.38:1),vx:kind==='drifter'?(Math.random()<.5?-1:1)*(55+Math.random()*50):0,rot:Math.random()*6,spin:(Math.random()-.5)*3});
+  const difficulty=difficultyProfile(),roll=Math.random();
+  const kind=roll<.18?'shard':roll<.18+difficulty.hunterChance?'hunter':roll<.18+difficulty.hunterChance+difficulty.drifterChance?'drifter':'rock';
+  const r=kind==='shard'?10+Math.random()*8:kind==='hunter'?13+Math.random()*5:14+Math.random()*19;
+  const baseSpeed=190+Math.random()*90+Math.min(210,elapsed*2.6);
+  const speedFactor=difficulty.rockSpeed*(kind==='shard'?1.38:kind==='hunter'?.94:1);
+  rocks.push({kind,x:r+Math.random()*(W-2*r),y:-r,r,vy:baseSpeed*speedFactor,vx:kind==='drifter'?(Math.random()<.5?-1:1)*(55+Math.random()*50+difficulty.tier*12):0,homing:kind==='hunter'?72+difficulty.tier*10:0,rot:Math.random()*6,spin:(Math.random()-.5)*3});
 }
 function spawnStar(){stars.push({x:18+Math.random()*(W-36),y:-15,r:10,vy:170+elapsed*2,phase:Math.random()*6})}
 function spawnPowerup(){const types=['shield','magnet','slow'];const type=types[Math.floor(Math.random()*types.length)];powerups.push({type,x:24+Math.random()*(W-48),y:-24,r:15,vy:145+Math.min(55,elapsed*.7),phase:Math.random()*6})}
-function spawnGate(){const gapW=Math.max(118,Math.min(190,W*.32));const margin=gapW/2+12;const baseGap=margin+Math.random()*Math.max(1,W-2*margin);gates.push({y:-24,gapX:baseGap,baseGap,gapW,vy:155+Math.min(45,elapsed*.45),phase:Math.random()*6,swing:Math.min(55,W*.09),passed:false})}
+function spawnGate(){const difficulty=difficultyProfile();const gapW=Math.max(108,Math.min(184,W*difficulty.gateRatio));const margin=gapW/2+12;const baseGap=margin+Math.random()*Math.max(1,W-2*margin);gates.push({y:-24,gapX:baseGap,baseGap,gapW,vy:(155+Math.min(45,elapsed*.45))*(1+difficulty.tier*.035),phase:Math.random()*6,swing:Math.min(65,W*.10)*(difficulty.tier>=2?1.15:1),passed:false})}
 function startEvent(){const events=[
   {id:'meteor',title:'МЕТЕОРИТНЫЙ ДОЖДЬ',duration:8},
   {id:'crystal',title:'КРИСТАЛЬНЫЙ РАШ',duration:10},
@@ -661,7 +671,7 @@ function hitPlayer(color='#ff6388'){
   if(currentShip().revive&&!ghostUsed){ghostUsed=true;burst(player.x,player.y,currentShip().color,22);playSfx('phase');return}
   lives--;burst(player.x,player.y,color,18);playSfx('hit');if(lives<=0){updateHUD();finishRun()}
 }
-function update(dt){if(state!=='play')return;const ship=currentShip(),u=profile.upgrades;elapsed+=dt;scoreCarry+=dt*10*(1+u.reactor*.08);const earned=Math.floor(scoreCarry);if(earned>0){score+=earned;scoreCarry-=earned}
+function update(dt){if(state!=='play')return;const ship=currentShip(),u=profile.upgrades;elapsed+=dt;const difficulty=difficultyProfile();scoreCarry+=dt*10*(1+u.reactor*.08);const earned=Math.floor(scoreCarry);if(earned>0){score+=earned;scoreCarry-=earned}
   const speed=player.speed*(1+u.engine*.07)*(ship.speed||1);
   let moveX=(keys.arrowright||keys.d||keys.right?1:0)-(keys.arrowleft||keys.a||keys.left?1:0);
   let moveY=(keys.arrowdown||keys.s||keys.down?1:0)-(keys.arrowup||keys.w||keys.up?1:0);
@@ -669,17 +679,17 @@ function update(dt){if(state!=='play')return;const ship=currentShip(),u=profile.
   player.x+=moveX*speed*dt;player.y+=moveY*speed*dt;
   if(activeEvent==='wind')player.x+=Math.sin(elapsed*3.2)*72*dt;
   clampPlayer();
-  if(activeEvent){eventLeft-=dt;if(eventLeft<=0){activeEvent=null;eventTimer=18;playSfx('eventEnd');updateRunStatus()}}else{eventTimer-=dt;if(eventTimer<=0)startEvent()}
+  if(activeEvent){eventLeft-=dt;if(eventLeft<=0){activeEvent=null;eventTimer=difficulty.eventRest+Math.random()*2;playSfx('eventEnd');updateRunStatus()}}else{eventTimer-=dt;if(eventTimer<=0)startEvent()}
   spawn+=dt;starSpawn+=dt;powerSpawnTimer-=dt;gateTimer-=dt;
-  const baseRockInterval=Math.max(.28,.92-elapsed*.009),rockInterval=activeEvent==='meteor'?Math.max(.19,.34-elapsed*.002):baseRockInterval;
+  const baseRockInterval=difficulty.rockInterval,rockInterval=activeEvent==='meteor'?Math.max(.20,baseRockInterval*.58):baseRockInterval;
   if(spawn>rockInterval){spawn=0;spawnRock()}
   const baseStarInterval=Math.max(.8,2.4-elapsed*.006)*(1-u.scanner*.06),starInterval=activeEvent==='crystal'?.66:baseStarInterval;
   if(starSpawn>starInterval){starSpawn=0;spawnStar()}
-  if(powerSpawnTimer<=0){if(Math.random()<.82)spawnPowerup();powerSpawnTimer=10+Math.random()*6}
-  if(gateTimer<=0){spawnGate();gateTimer=23+Math.random()*6}
+  if(powerSpawnTimer<=0){if(Math.random()<difficulty.powerChance)spawnPowerup();powerSpawnTimer=difficulty.powerMin+Math.random()*difficulty.powerSpan}
+  if(gateTimer<=0){spawnGate();gateTimer=difficulty.gateInterval+Math.random()*3}
   collisionCooldown=Math.max(0,collisionCooldown-dt);shieldTimer=Math.max(0,shieldTimer-dt);if(shieldTimer<=0)shieldHits=0;if(buffTimer>0){buffTimer=Math.max(0,buffTimer-dt);if(buffTimer===0)activeBuff=null}
   const hazardScale=activeBuff==='slow'?.58:1;
-  for(const r of rocks){r.y+=r.vy*dt*hazardScale;r.x+=r.vx*dt;if(r.x<r.r||r.x>W-r.r)r.vx*=-1;r.rot+=r.spin*dt;if(collisionCooldown<=0&&Math.hypot(r.x-player.x,r.y-player.y)<r.r+17){r.y=H+100;hitPlayer();if(state!=='play')return}}
+  for(const r of rocks){if(r.kind==='hunter'){const desired=Math.max(-r.homing,Math.min(r.homing,(player.x-r.x)*.85));r.vx+=(desired-r.vx)*Math.min(1,dt*1.35)}r.y+=r.vy*dt*hazardScale;r.x+=r.vx*dt;if(r.x<r.r||r.x>W-r.r){r.x=Math.max(r.r,Math.min(W-r.r,r.x));r.vx*=-.72}r.rot+=r.spin*dt;if(collisionCooldown<=0&&Math.hypot(r.x-player.x,r.y-player.y)<r.r+17){r.y=H+100;hitPlayer();if(state!=='play')return}}
   for(const g of gates){const oldY=g.y;g.y+=g.vy*dt*hazardScale;g.gapX=g.baseGap+Math.sin(g.y*.009+g.phase)*g.swing;g.gapX=Math.max(g.gapW/2+8,Math.min(W-g.gapW/2-8,g.gapX));if(!g.passed&&oldY<=player.y&&g.y>player.y){g.passed=true;if(Math.abs(player.x-g.gapX)<g.gapW/2-18){score+=75;playSfx('gate')}}if(collisionCooldown<=0&&Math.abs(g.y-player.y)<13&&Math.abs(player.x-g.gapX)>g.gapW/2-18){hitPlayer('#ba8cff');if(state!=='play')return}}
   const magnetRadius=18+u.magnet*5+(ship.magnet||0)+(activeBuff==='magnet'?78:0);
   for(const s of stars){s.y+=s.vy*dt*hazardScale;s.phase+=dt*5;const dx=player.x-s.x,dy=player.y-s.y,dist=Math.hypot(dx,dy);if(magnetRadius>18&&dist<magnetRadius+45&&dist>24){const pull=(activeBuff==='magnet'?4.2:1.8)*dt;s.x+=dx*pull;s.y+=dy*pull}if(dist<magnetRadius+9)collectStar(s)}
@@ -695,7 +705,7 @@ function drawShip(){const ship=currentShip();ctx.save();ctx.translate(player.x,p
   ctx.restore()}
 function drawGate(g){ctx.save();ctx.shadowBlur=18;ctx.shadowColor='#9b7bff';ctx.fillStyle='#a18bff';ctx.globalAlpha=.82;const leftEnd=g.gapX-g.gapW/2,rightStart=g.gapX+g.gapW/2;ctx.fillRect(0,g.y-7,Math.max(0,leftEnd),14);ctx.fillRect(rightStart,g.y-7,Math.max(0,W-rightStart),14);ctx.globalAlpha=.3;ctx.fillStyle='#e5deff';ctx.fillRect(Math.max(0,leftEnd-5),g.y-2,Math.min(10,leftEnd),4);ctx.fillRect(rightStart,g.y-2,Math.min(10,W-rightStart),4);ctx.restore()}
 function drawPowerup(p){const styles={shield:{color:'#65eaff',symbol:'◇'},magnet:{color:'#b69aff',symbol:'✧'},slow:{color:'#78f0b5',symbol:'◷'}};const st=styles[p.type];ctx.save();ctx.translate(p.x,p.y);ctx.rotate(Math.sin(p.phase)*.12);ctx.shadowBlur=20;ctx.shadowColor=st.color;ctx.fillStyle=st.color+'33';ctx.strokeStyle=st.color;ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.font='bold 18px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(st.symbol,0,1);ctx.restore()}
-function draw(){drawBackground();for(const g of gates)drawGate(g);for(const r of rocks){ctx.save();ctx.translate(r.x,r.y);ctx.rotate(r.rot);ctx.shadowBlur=12;ctx.shadowColor=r.kind==='shard'?'#68eaff':r.kind==='drifter'?'#b78cff':'#ff647d';ctx.fillStyle=r.kind==='shard'?'#4d9db5':r.kind==='drifter'?'#725b9b':'#8b526b';ctx.strokeStyle=r.kind==='shard'?'#9ef2ff':r.kind==='drifter'?'#d1baff':'#ff8a9d';ctx.lineWidth=2;ctx.beginPath();if(r.kind==='shard'){ctx.moveTo(0,-r.r*1.35);ctx.lineTo(r.r*.85,r.r);ctx.lineTo(-r.r,r.r*.55)}else{for(let i=0;i<9;i++){const a=i*Math.PI*2/9,rr=r.r*(.78+Math.sin(i*4.2)*.18);if(!i)ctx.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}}ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
+function draw(){drawBackground();for(const g of gates)drawGate(g);for(const r of rocks){const isHunter=r.kind==='hunter';ctx.save();ctx.translate(r.x,r.y);ctx.rotate(r.rot);ctx.shadowBlur=isHunter?18:12;ctx.shadowColor=r.kind==='shard'?'#68eaff':isHunter?'#ffbf68':r.kind==='drifter'?'#b78cff':'#ff647d';ctx.fillStyle=r.kind==='shard'?'#4d9db5':isHunter?'#a36a42':r.kind==='drifter'?'#725b9b':'#8b526b';ctx.strokeStyle=r.kind==='shard'?'#9ef2ff':isHunter?'#ffe0a0':r.kind==='drifter'?'#d1baff':'#ff8a9d';ctx.lineWidth=2;ctx.beginPath();if(r.kind==='shard'){ctx.moveTo(0,-r.r*1.35);ctx.lineTo(r.r*.85,r.r);ctx.lineTo(-r.r,r.r*.55)}else if(isHunter){for(let i=0;i<8;i++){const a=i*Math.PI/4,rr=r.r*(i%2?.68:1.08);if(!i)ctx.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}}else{for(let i=0;i<9;i++){const a=i*Math.PI*2/9,rr=r.r*(.78+Math.sin(i*4.2)*.18);if(!i)ctx.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}}ctx.closePath();ctx.fill();ctx.stroke();if(isHunter){ctx.shadowBlur=0;ctx.fillStyle='#fff0c8';ctx.beginPath();ctx.arc(0,0,Math.max(2,r.r*.2),0,Math.PI*2);ctx.fill()}ctx.restore()}
   for(const s of stars){ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.phase*.15);ctx.shadowBlur=18;ctx.shadowColor='#ffe77a';ctx.fillStyle='#ffe77a';ctx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?4:11;if(!i)ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r);else ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r)}ctx.closePath();ctx.fill();ctx.restore()}
   for(const p of powerups)drawPowerup(p);
   for(const p of particles){ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,4,4)}ctx.globalAlpha=1;if(state==='play'||state==='paused')drawShip()}
