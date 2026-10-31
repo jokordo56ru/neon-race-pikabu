@@ -1,6 +1,7 @@
 NEON RACE — Pikabu Games Edition
-Version: 4.7
+Version: 4.8
 Integrations: Pikabu SDK, Cloud Storage, Rewarded Ads (+50 crystals), Fullscreen Ads between flights
+Gameplay: staged difficulty curve, faster hazard waves, tracking hunter asteroids, tighter and faster gates
 Entrypoint: index.html
 Languages: Russian (default), English
 Fullscreen frequency is controlled by Pikabu SDK (minimum 120 seconds).
