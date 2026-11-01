@@ -307,34 +307,35 @@ function scheduleCloudSave(){
   if(!vkSdk?.storage)return;
   cloudQueued=true;
   if(vkSaveTimer)clearTimeout(vkSaveTimer);
-  vkSaveTimer=setTimeout(()=>{
+  vkSaveTimer=setTimeout(async()=>{
     vkSaveTimer=null;
     try{
       vkSdk.storage.set('neonRaceProfile_vk_v1',JSON.parse(JSON.stringify(profile)));
+      const result=await vkSdk.storage.flush();
+      if(!result?.success)throw new Error(result?.error||'VK storage write failed');
       lastCloudSyncAt=Date.now();cloudQueued=false;vkStorageError=null;
-      setSaveStatus('Прогресс записан в облачное хранилище VK.');
-    }catch(e){console.warn('VK storage.set failed',e);setSaveStatus('Облако VK временно недоступно; локальный прогресс сохранён')}
+      setSaveStatus('Облачное сохранение VK синхронизировано');
+    }catch(e){console.warn('VK storage write failed',e);setSaveStatus('Облако VK временно недоступно; локальный прогресс сохранён')}
   },500);
 }
 async function syncVKCloud(force=true){
-  if(!vkSdk?.storage){setSaveStatus('Облачные сохранения VK доступны после подключения SDK VK.');return false}
+  if(!vkSdk?.storage){setSaveStatus('Облачные сохранения VK доступны после подключения VK Bridge.');return false}
   try{
     if(vkSaveTimer){clearTimeout(vkSaveTimer);vkSaveTimer=null}
     vkSdk.storage.set('neonRaceProfile_vk_v1',JSON.parse(JSON.stringify(profile)));
     cloudQueued=false;
-    if(!force){setSaveStatus('Прогресс отправлен в облачное хранилище VK');return true}
-    // SDK autosaves set() changes; explicit flush is throttled to stay under platform limits.
-    const wait=30000-(Date.now()-vkLastFlushAt);
-    if(vkLastFlushAt&&wait>0){setSaveStatus('Изменения сохранены; облачная синхронизация выполняется автоматически');return true}
-    if(vkFlushBusy)return true;
+    if(vkFlushBusy)return (await vkSdk.storage.flush())?.success===true;
     vkFlushBusy=true;
     const result=await vkSdk.storage.flush();
-    vkLastFlushAt=Date.now();
-    if(result?.success){vkStorageError=null;setSaveStatus('Облачное сохранение VK синхронизировано');return true}
-    vkStorageError=result?.reason||'UNKNOWN';
-    setSaveStatus(vkStorageError==='REVISION_CONFLICT'?'Сохранение изменено на другом устройстве. Перезагрузи игру, чтобы загрузить актуальный прогресс.':'Не удалось сохранить в облако VK. Локальный прогресс сохранён.');
+    if(result?.success){
+      lastCloudSyncAt=Date.now();vkLastFlushAt=Date.now();vkStorageError=null;
+      setSaveStatus(force?'Облачное сохранение VK синхронизировано':'Прогресс сохранён в облаке VK');
+      return true;
+    }
+    vkStorageError=result?.reason||'VK_STORAGE_ERROR';
+    setSaveStatus('Не удалось сохранить в облако VK. Локальный прогресс сохранён.');
     return false;
-  }catch(e){console.warn('VK cloud flush failed',e);setSaveStatus('Не удалось сохранить в облако VK. Локальный прогресс сохранён.');return false}
+  }catch(e){console.warn('VK cloud save failed',e);setSaveStatus('Не удалось сохранить в облако VK. Локальный прогресс сохранён.');return false}
   finally{vkFlushBusy=false}
 }
 function saveProgress(cloud=false){
@@ -344,7 +345,7 @@ function saveProgress(cloud=false){
 function rewardAdButton(source='menu'){
   const available=!!(vkSdk?.ads?.rewarded?.isSupported);
   const label=rewardedAdBusy?'РЕКЛАМА ОТКРЫТА…':available?`СМОТРЕТЬ ВИДЕО · +${REWARDED_AD_CRYSTALS} ✦`:'РЕКЛАМА НЕДОСТУПНА';
-  return `<section class="rewardAdCard"><div class="rewardAdCopy"><div class="rewardAdTitle">🎬 Бонус за просмотр рекламы</div><div class="rewardAdText">Посмотри добровольный рекламный ролик и получи ${REWARDED_AD_CRYSTALS} кристаллов. Награда начисляется только после подтверждения просмотра VK.</div><div class="rewardAdMessage" aria-live="polite">${rewardAdMessage|| (available?'Видео по желанию · награду можно получить после просмотра':'Доступно после подключения SDK и монетизации в Консоли')}</div></div><button class="primary rewardAdButton" data-action="reward-ad" data-source="${source}" ${!available||rewardedAdBusy?'disabled':''}>${label}</button></section>`;
+  return `<section class="rewardAdCard"><div class="rewardAdCopy"><div class="rewardAdTitle">🎬 Бонус за просмотр рекламы</div><div class="rewardAdText">Посмотри добровольный рекламный ролик и получи ${REWARDED_AD_CRYSTALS} кристаллов. Награда начисляется только после подтверждения просмотра рекламного ролика платформой.</div><div class="rewardAdMessage" aria-live="polite">${rewardAdMessage|| (available?'Видео по желанию · награду можно получить после просмотра':'Доступно после подключения SDK и монетизации в Консоли')}</div></div><button class="primary rewardAdButton" data-action="reward-ad" data-source="${source}" ${!available||rewardedAdBusy?'disabled':''}>${label}</button></section>`;
 }
 function finishRewardedAd(wasShown=false,error=false){
   if(!rewardedAdBusy)return;
